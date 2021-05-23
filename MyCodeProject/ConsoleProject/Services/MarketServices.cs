@@ -72,7 +72,9 @@ namespace ConsoleProject.Services
         {
             if (productNo == 0)
                 throw new ArgumentNullException("productNo", "Məhsulun nömrəsi yanlış daxil edilib");
-            //Product editProduct = products.FirstOrDefault(i=>i.ID == productNo);
+            if (!products.Exists(i => i.ID == productNo))
+                throw new KeyNotFoundException("Məhsul Tapılmadı");
+            
 
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException("name", "Məhsul adı boşdur");
@@ -81,8 +83,7 @@ namespace ConsoleProject.Services
             if (price <= 0)
                 throw new ArgumentOutOfRangeException("price", "Məhsulun qiyməti yanlış daxil edilib");
 
-            //if (!products.Exists(i=>i.ID == productNo))
-            //    throw new KeyNotFoundException("Məhsul Tapılmadı");
+           
             foreach (var product in products)
             {
                 if (product.ID == productNo)

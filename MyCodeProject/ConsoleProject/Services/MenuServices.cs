@@ -135,6 +135,10 @@ namespace ConsoleProject.Services
             {
                 Console.WriteLine(ex.Message);
             }
+            catch (KeyNotFoundException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
             catch (ArgumentOutOfRangeException ex)
             {
                 Console.WriteLine(ex.Message);
@@ -143,6 +147,7 @@ namespace ConsoleProject.Services
             {
                 Console.WriteLine("Məhsulun Kateqoriyası yanlış daxil edilib");//duselt bu hissəni exception hissəsini
             }
+            
             catch (Exception)
             {
                 Console.WriteLine("Xeta oldu");
