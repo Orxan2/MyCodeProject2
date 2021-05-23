@@ -70,7 +70,7 @@ namespace ConsoleProject.Services
         }
         public static void DeleteProductMenu()
         {
-            Console.Write("Silinecek Məhsulun nomresini daxil edin : ");
+            Console.Write("Silinəcək məhsulun nömrəsini daxil edin : ");
             int.TryParse(Console.ReadLine(), out int index);
             
             try
@@ -96,12 +96,56 @@ namespace ConsoleProject.Services
 
             try
             {
-                operations.SearchProduct(search);
-                Console.WriteLine("Məhsul Editləndi");
+               var searchedProducts = operations.SearchProduct(search);
+                var x = new ConsoleTable("Nömrəsi", "Adı", "Kateqoriyası", "Qiyməti (AZN)", "Sayı");
+                foreach (var searchedProduct in searchedProducts)
+                {
+                    x.AddRow(searchedProduct.ID, searchedProduct.Name, searchedProduct.Category, searchedProduct.Price, searchedProduct.Quantity);
+                }
+                x.Write();
+                //Console.WriteLine();
             }
             catch (ArgumentNullException ex)
             {
                 Console.WriteLine(ex.Message);
+            }
+        }
+
+        public static void EditProductMenu()
+        {
+            Console.Write("Düzəliş ediləcək məhsulun nömrəsini daxil edin : ");
+            int.TryParse(Console.ReadLine(), out int index);
+
+            Console.Write("Məhsulun adını : ");
+            string name = Console.ReadLine();          
+
+            Console.Write("Məhsulun kateqoriyası : ");
+            string category = Console.ReadLine();
+
+            Console.Write("Məhsulun qiyməti : ");
+            //Əgər yanlış daxil edilsə price = 0 olacaq və ArgumentOutOfRangeException yaranacaq
+            double.TryParse(Console.ReadLine(), out double price);
+
+            try
+            {
+                operations.EditProduct(index,name, Enum.Parse<Categories>(category),price);
+                Console.WriteLine("Məhsul yeniləndi");
+            }
+            catch (ArgumentNullException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine("Məhsulun Kateqoriyası yanlış daxil edilib");//duselt bu hissəni exception hissəsini
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Xeta oldu");
             }
         }
 
