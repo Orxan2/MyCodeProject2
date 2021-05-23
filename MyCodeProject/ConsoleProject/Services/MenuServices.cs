@@ -1,6 +1,7 @@
 ﻿using ConsoleTables;
 using System;
 using ConsoleProject.Data.Enums;
+using System.IO;
 using System.Collections.Generic;
 
 namespace ConsoleProject.Services
@@ -52,11 +53,42 @@ namespace ConsoleProject.Services
             catch (ArgumentOutOfRangeException ex)
             {
                 Console.WriteLine(ex.Message);
-            }           
+            }
+            catch (ArgumentException ex)
+            {             
+             //Console.ForegroundColor =  ConsoleColor.Red;
+                Console.WriteLine("Məhsulun Kateqoriyası yanlış daxil edilib");
+               
+                //Console.WriteLine(ex.Message);
+            }
             catch (Exception ex)
             {
                 Console.WriteLine("Gözlənilməz bir xəta baş verdi");
+                //Console.WriteLine($"Message : {ex.Message} \n Type : {ex.GetType()}");
             }
+
         }
+
+        public static void DeleteProductMenu()
+        {
+            Console.Write("Silinecek Məhsulun nomresini daxil edin : ");
+            int.TryParse(Console.ReadLine(), out int index);
+            
+            try
+            {
+                operations.DeleteProduct(index);
+                Console.WriteLine("Məhsul silindi");
+            }
+            catch (ArgumentNullException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+           
+        }
+
     }
 }
