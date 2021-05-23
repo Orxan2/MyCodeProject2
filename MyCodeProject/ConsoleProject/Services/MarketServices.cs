@@ -92,9 +92,10 @@ namespace ConsoleProject.Services
                     product.Name = name;
                     product.Category = category;
                     product.Price = price;
-                    
-                    product.Quantity = products.Where(i => i.Name == product.Name).Count();
+
+                    //product.Quantity = products.Where(i => i.Name == product.Name).Count();
                 }
+                product.Quantity = products.Where(i => i.Name == product.Name).Count();
             }
             
         }
