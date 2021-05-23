@@ -3,6 +3,7 @@ using System;
 using ConsoleProject.Data.Enums;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ConsoleProject.Services
 {
@@ -18,6 +19,7 @@ namespace ConsoleProject.Services
 
         public static void DisplayProductList()
         {
+          
             var table = new ConsoleTable("Nömrəsi","Adı","Kateqoriyası", "Qiyməti (AZN)", "Sayı");
             foreach (var product in operations.products)
             {

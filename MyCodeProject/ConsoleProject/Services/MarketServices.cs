@@ -88,9 +88,11 @@ namespace ConsoleProject.Services
             {
                 if (product.ID == productNo)
                 {
+                    //product.Quantity = product.Quantity - 1;// evvelkinin saylini asaltmaq
                     product.Name = name;
                     product.Category = category;
                     product.Price = price;
+                    
                     product.Quantity = products.Where(i => i.Name == product.Name).Count();
                 }
             }
