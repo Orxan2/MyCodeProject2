@@ -68,7 +68,6 @@ namespace ConsoleProject.Services
             }
 
         }
-
         public static void DeleteProductMenu()
         {
             Console.Write("Silinecek Məhsulun nomresini daxil edin : ");
@@ -88,6 +87,22 @@ namespace ConsoleProject.Services
                 Console.WriteLine(ex.Message);
             }
            
+        }
+
+        public static void SearchProductMenu()
+        {
+            Console.Write("Məhsulun adını daxil edin : ");
+            string search = Console.ReadLine();
+
+            try
+            {
+                operations.SearchProduct(search);
+                Console.WriteLine("Məhsul Editləndi");
+            }
+            catch (ArgumentNullException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
     }

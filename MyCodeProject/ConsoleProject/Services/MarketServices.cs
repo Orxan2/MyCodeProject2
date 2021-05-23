@@ -54,5 +54,20 @@ namespace ConsoleProject.Services
             products.RemoveAt(index);
 
         }
+
+        public void SearchProduct(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                throw new ArgumentNullException("Daxil edilən mətn boşdur!");
+
+            var updatedProdects = products.Where(i=> i.Name.Contains(text));
+            //if (string.IsNullOrEmpty(text))
+            //    throw new ArgumentNullException("");
+          
+            foreach (var updatedProdect in updatedProdects)
+            {
+                Console.WriteLine($"{updatedProdect.ID} {updatedProdect.Name} {updatedProdect.Category} {updatedProdect.Price} {updatedProdect.Quantity}");
+            }
+        }
     }
 }

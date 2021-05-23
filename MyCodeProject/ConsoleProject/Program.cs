@@ -22,6 +22,7 @@ namespace ConsoleProject
                 Console.WriteLine("1. Display");
                 Console.WriteLine("2. Add");
                 Console.WriteLine("3. Delete");
+                Console.WriteLine("4. Search");
 
                 Console.WriteLine("0. Sistemdən Çıxmaq");
 
@@ -45,6 +46,9 @@ namespace ConsoleProject
                         break;
                     case 3:
                         MenuServices.DeleteProductMenu();
+                        break;
+                    case 4:
+                        MenuServices.SearchProductMenu();
                         break;
                     case 0:
                         Console.WriteLine("Exit");
