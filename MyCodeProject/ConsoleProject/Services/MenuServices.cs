@@ -18,17 +18,17 @@ namespace ConsoleProject.Services
 
         //public MenuServices() => categories.AddRange(categories);
 
-        public static void DisplayProductList()
-        {
+        //public static void DisplayProductList()
+        //{
           
-            var table = new ConsoleTable("Nömrəsi","Adı","Kateqoriyası", "Qiyməti (AZN)", "Sayı");
-            foreach (var product in operations.Products)
-            {
-                table.AddRow(product.ID,product.Name, product.Category, product.Price,product.Quantity);
-            }
-            table.Write();
-            //Console.WriteLine();
-        }
+        //    var table = new ConsoleTable("Nömrəsi","Adı","Kateqoriyası", "Qiyməti (AZN)", "Sayı");
+        //    foreach (var product in operations.Products)
+        //    {
+        //        table.AddRow(product.ID,product.Name, product.Category, product.Price,product.Quantity);
+        //    }
+        //    table.Write();
+        //    //Console.WriteLine();
+        //}
 
         public static void AddProductMenu()             
         {           

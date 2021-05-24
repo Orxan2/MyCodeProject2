@@ -7,9 +7,7 @@ namespace ConsoleProject
     {
         static void Main(string[] args)
         {
-            var d = new MarketServices();
-
-
+           
             Console.OutputEncoding = UTF8Encoding.UTF8;
             int selection = 0;
 
@@ -17,17 +15,7 @@ namespace ConsoleProject
             {
                 Console.WriteLine("1. Məhsullar Üzərində Əməliyyat Aparmaq");
                 Console.WriteLine("2. Satışlar Üzərində Əməliyyat Aparmaq");
-                Console.WriteLine("0. Sistemdən Çıxmaq");
-
-                //Console.WriteLine("1. Display");
-                //Console.WriteLine("2. Add");
-                //Console.WriteLine("3. Delete");
-                //Console.WriteLine("4. Search");
-                //Console.WriteLine("5. Edit");
-                //Console.WriteLine("6. Search For Price");
-                //Console.WriteLine("7. Search For Category");
-
-                //Console.WriteLine("0. Sistemdən Çıxmaq");
+                Console.WriteLine("0. Sistemdən Çıxmaq");              
 
                 Console.Write("Bir əmr seçin : ");
 
@@ -42,26 +30,11 @@ namespace ConsoleProject
                 switch (selection)
                 {
                     case 1:
-                        MenuServices.DisplayProductList();
+                        SubMenu.ShowProductOperations();
                         break;
                     case 2:
-                        MenuServices.AddProductMenu();
-                        break;
-                    case 3:
-                        MenuServices.DeleteProductMenu();
-                        break;
-                    case 4:
-                        MenuServices.SearchProductMenu();
-                        break;
-                    case 5:
-                        MenuServices.EditProductMenu();
-                        break;
-                    case 6:
-                        MenuServices.SearchProductMenuForPrice();
-                        break;
-                    case 7:
-                        MenuServices.SearchProductMenuForCategory();
-                        break;
+                        SubMenu.ShowSaleOperations();
+                        break;                  
                     case 0:
                         Console.WriteLine("Exit");
                         break;
