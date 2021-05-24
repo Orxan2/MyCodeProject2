@@ -4,6 +4,7 @@ using ConsoleProject.Data.Enums;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+using ConsoleProject.Data.Entities;
 
 namespace ConsoleProject.Services
 {
@@ -134,43 +135,67 @@ namespace ConsoleProject.Services
                 Console.WriteLine("Nömrə Yanlışdır");
                 return;
             }
-          
-            Console.Write("Məhsulun adını : ");
-            string name = Console.ReadLine();          
+            int selection = 0;
+            Product data = new();
+            do
+            {
+                Console.WriteLine("1.Ad 2.Kateqoriya 3.Qiymət 4.Say 0.Artıq Dəyişmək İstəmirəm");
+                Console.Write("Nəyi Dəyişmək istəyirsiniz? : ");
 
-            Console.Write("Məhsulun kateqoriyası : ");
-            string category = Console.ReadLine();
+                string selectionStr = Console.ReadLine();
+                while (!int.TryParse(selectionStr, out selection))
+                {
+                    Console.WriteLine("Again");
+                    selectionStr = Console.ReadLine();
+                }
 
-            Console.Write("Məhsulun qiyməti : ");
-            //Əgər yanlış daxil edilsə price = 0 olacaq və ArgumentOutOfRangeException yaranacaq
-            double.TryParse(Console.ReadLine(), out double price);
+                switch (selection)
+                {
+                    case 1:
+                        {
+                            Console.Write("Məhsulun adını : ");
+                            string name = Console.ReadLine();
+                            data.Name = name;
+                            break;
+                        }
+                    case 2:
+                        {
+                            Console.Write("Məhsulun kateqoriyası : ");
 
-            try
-            {
-                operations.EditProduct(index,name, Enum.Parse<Categories>(category),price);
-                Console.WriteLine("Məhsul yeniləndi");
-            }
-            catch (ArgumentNullException ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            catch (ArgumentOutOfRangeException ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            catch (ArgumentException ex)
-            {
-                Console.WriteLine("Məhsulun Kateqoriyası yanlış daxil edilib");//duselt bu hissəni exception hissəsini
-            }
-            
-            catch (Exception)
-            {
-                Console.WriteLine("Xeta oldu");
-            }
+                            if (Enum.TryParse<Categories>(Console.ReadLine(), false, out Categories category))
+                                data.Category = category;                            
+                            else
+                                Console.WriteLine("Kateqoriya Yanlış daxil edildi");
+
+                            break;
+                        }
+                    case 3:
+                        {
+                            Console.Write("Məhsulun qiyməti : ");
+                            if (double.TryParse(Console.ReadLine(), out double price))
+                                data.Price = price;
+                            else
+                                Console.WriteLine("Qiymət yanlış daxil edildi");
+                            break;
+                        }
+                    case 4:
+                        {
+                            Console.Write("Məhsulun sayı : ");
+                            if (int.TryParse(Console.ReadLine(), out int quantity))
+                                data.Quantity = quantity;
+                            else
+                                Console.WriteLine("Say yanlış daxil edildi");
+                            break;
+                        }                   
+                    default:
+                        Console.WriteLine("Yanlış düyməyə basdınız");
+                        break;
+                }
+            } while (selection != 0);
+
+            operations.EditProduct(index, data);
+            Console.WriteLine("Məhsul yeniləndi");
+
         }
 
         public static void SearchProductMenuForPrice()

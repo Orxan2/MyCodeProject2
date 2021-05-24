@@ -72,36 +72,25 @@ namespace ConsoleProject.Services
             return updatedProdects;
         }
 
-        public void EditProduct(int productNo,string name,Categories category,double price)
+        public void EditProduct(int productNo, Product data)
         {
-            if (productNo == 0)
-                throw new ArgumentNullException("productNo", "Məhsulun nömrəsi yanlış daxil edilib");
-            if (!products.Exists(i => i.ID == productNo))
-                throw new KeyNotFoundException("Məhsul Tapılmadı");
-            
-
-            if (string.IsNullOrEmpty(name))
-                throw new ArgumentNullException("name", "Məhsul adı boşdur");
-            if (!categoryList.Contains(category))
-                throw new ArgumentException("Məhsulun Kateqoriyası yanlış daxil edilib");
-            if (price <= 0)
-                throw new ArgumentOutOfRangeException("price", "Məhsulun qiyməti yanlış daxil edilib");
-
-           
             foreach (var product in products)
             {
                 if (product.ID == productNo)
-                {
-                    //product.Quantity = product.Quantity - 1;// evvelkinin saylini asaltmaq
-                    product.Name = name;
-                    product.Category = category;
-                    product.Price = price;
+                {                    
+                     if(!string.IsNullOrEmpty(data.Name))
+                            product.Name = data.Name;
 
-                    //product.Quantity = products.Where(i => i.Name == product.Name).Count();
-                }
-                product.Quantity = products.Where(i => i.Name == product.Name).Count();
-            }
-            
+                     if(data.Category!=null)
+                            product.Category = data.Category;
+
+                    if(data.Price != 0)
+                            product.Price = data.Price;
+
+                    if (data.Quantity != 0)
+                            product.Quantity = data.Quantity;                  
+                }               
+            }            
         }
 
         public IEnumerable<Product> SearchProductForPrice(double min,double max)
@@ -134,6 +123,5 @@ namespace ConsoleProject.Services
             return searchedProducts;
         }
     }
-
 
 }
