@@ -22,23 +22,27 @@ namespace ConsoleProject.Services
             categoryList.AddRange(Enum.GetValues<Categories>());
         }
 
-       public void AddProduct(string name, double price, Categories category)
+       public void AddProduct(string name, double price, Categories category,int quantity)
         {
 
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException("name", "Məhsul adı boşdur");
-                       
+            //if (products.Exists(i=>i.Name == name))
+            //    throw new DuplicateWaitObjectException("name", "Bu məhsul artıq bazada var");
+            //mehsulun artiq olmasini yoxlayir
+           
             if (price <= 0)
                 throw new ArgumentOutOfRangeException("price", "Məhsulun qiyməti yanlış daxil edilib");
             if (!categoryList.Contains(category))
                 throw new ArgumentException("Məhsulun Kateqoriyası yanlış daxil edilib");
-           
+            if (quantity <= 0)
+                throw new ArgumentOutOfRangeException("price", "Məhsulun sayı 0-dan böyük olmalıdır!");
+
             Product product = new();
             product.Name = name;
             product.Price = price;
             product.Category = category;
-            product.Quantity = products.Where(i=>i.Name==product.Name).Count()+1;
-
+            product.Quantity = quantity;
             products.Add(product);
         }
 

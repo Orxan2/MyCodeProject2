@@ -29,11 +29,15 @@ namespace ConsoleProject.Services
             //Console.WriteLine();
         }
 
-        public static void AddProductMenu()
-        {
+        public static void AddProductMenu()             
+        {           
             Console.Write("Məhsulun adını daxil edin : ");
             string name = Console.ReadLine();
-
+            if (operations.products.Exists(i => i.Name == name))
+            {
+                Console.WriteLine("Bu məhsul artıq bazada var");
+                return;
+            }
             Console.Write("Məhsulun qiymətini daxil edin : ");
             //Əgər yanlış daxil edilsə price = 0 olacaq və ArgumentOutOfRangeException yaranacaq
             double.TryParse(Console.ReadLine(), out double price);
@@ -41,10 +45,12 @@ namespace ConsoleProject.Services
             Console.Write("Məhsulun kateqoriyasını daxil edin : ");
             string category = Console.ReadLine();
 
+            Console.Write("Məhsulun sayını daxil edin : ");
+            int.TryParse(Console.ReadLine(), out int quantity);
 
             try
-            {
-                operations.AddProduct(name, price, Enum.Parse<Categories>(category));
+            {            
+                operations.AddProduct(name, price, Enum.Parse<Categories>(category), quantity);
                 Console.WriteLine("Product Inserted");
             }
 
@@ -52,6 +58,11 @@ namespace ConsoleProject.Services
             {
                 Console.WriteLine(ex.Message);
             }
+            catch (DuplicateWaitObjectException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            
             catch (ArgumentOutOfRangeException ex)
             {
                 Console.WriteLine(ex.Message);
@@ -70,6 +81,7 @@ namespace ConsoleProject.Services
             }
 
         }
+      
         public static void DeleteProductMenu()
         {
             Console.Write("Silinəcək məhsulun nömrəsini daxil edin : ");
@@ -117,7 +129,12 @@ namespace ConsoleProject.Services
         {
             Console.Write("Düzəliş ediləcək məhsulun nömrəsini daxil edin : ");
             int.TryParse(Console.ReadLine(), out int index);
-
+            if (!operations.products.Exists(i => i.ID == index))
+            {
+                Console.WriteLine("Nömrə Yanlışdır");
+                return;
+            }
+          
             Console.Write("Məhsulun adını : ");
             string name = Console.ReadLine();          
 
