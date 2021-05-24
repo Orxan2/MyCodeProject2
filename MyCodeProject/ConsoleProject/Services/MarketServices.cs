@@ -99,5 +99,37 @@ namespace ConsoleProject.Services
             }
             
         }
+
+        public IEnumerable<Product> SearchProductForPrice(double min,double max)
+        {
+            
+            if (min <= 0)
+                throw new ArgumentOutOfRangeException("min", "Minimum Dəyər 0-dan böyük olmalıdır");
+            if (max <= 0)
+                throw new ArgumentOutOfRangeException("max", "Maksimum Dəyər 0-dan böyük olmalıdır");
+
+            var searchedProducts = products.Where(i=>i.Price < max && i.Price > min);
+            //if (string.IsNullOrEmpty(text))
+            //    throw new ArgumentNullException("");
+
+
+            return searchedProducts;
+        }
+
+        public IEnumerable<Product> SearchProductForCategory(Categories category)
+        {
+
+            if (!categoryList.Contains(category))
+                throw new ArgumentException("Məhsulun Kateqoriyası yanlış daxil edilib");
+
+            var searchedProducts = products.Where(i => i.Category == category);
+            //if (string.IsNullOrEmpty(text))
+            //    throw new ArgumentNullException("");
+
+
+            return searchedProducts;
+        }
     }
+
+
 }

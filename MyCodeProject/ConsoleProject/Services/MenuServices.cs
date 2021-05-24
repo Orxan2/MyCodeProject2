@@ -156,5 +156,51 @@ namespace ConsoleProject.Services
             }
         }
 
+        public static void SearchProductMenuForPrice()
+        {
+            Console.Write("Minimum dəyər daxil edin : ");
+            double.TryParse(Console.ReadLine(), out double minimum);
+
+            Console.Write("Maksimum dəyər daxil edin : ");
+            double.TryParse(Console.ReadLine(), out double maximum);
+
+            try
+            {
+                var searchedProducts = operations.SearchProductForPrice(minimum,maximum);
+                var x = new ConsoleTable("Nömrəsi", "Adı", "Kateqoriyası", "Qiyməti (AZN)", "Sayı");
+                foreach (var searchedProduct in searchedProducts)
+                {
+                    x.AddRow(searchedProduct.ID, searchedProduct.Name, searchedProduct.Category, searchedProduct.Price, searchedProduct.Quantity);
+                }
+                x.Write();
+                //Console.WriteLine();
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        public static void SearchProductMenuForCategory()
+        {
+            Console.Write("Kateqoriya daxil edin : ");
+            string category = Console.ReadLine();                     
+
+            try
+            {
+                var searchedProducts = operations.SearchProductForCategory(Enum.Parse<Categories>(category));
+                var x = new ConsoleTable("Nömrəsi", "Adı", "Kateqoriyası", "Qiyməti (AZN)", "Sayı");
+                foreach (var searchedProduct in searchedProducts)
+                {
+                    x.AddRow(searchedProduct.ID, searchedProduct.Name, searchedProduct.Category, searchedProduct.Price, searchedProduct.Quantity);
+                }
+                x.Write();
+                //Console.WriteLine();
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
     }
 }

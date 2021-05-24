@@ -24,6 +24,8 @@ namespace ConsoleProject
                 Console.WriteLine("3. Delete");
                 Console.WriteLine("4. Search");
                 Console.WriteLine("5. Edit");
+                Console.WriteLine("6. Search For Price");
+                Console.WriteLine("7. Search For Category");
 
                 Console.WriteLine("0. Sistemdən Çıxmaq");
 
@@ -53,6 +55,12 @@ namespace ConsoleProject
                         break;
                     case 5:
                         MenuServices.EditProductMenu();
+                        break;
+                    case 6:
+                        MenuServices.SearchProductMenuForPrice();
+                        break;
+                    case 7:
+                        MenuServices.SearchProductMenuForCategory();
                         break;
                     case 0:
                         Console.WriteLine("Exit");
