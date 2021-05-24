@@ -15,19 +15,19 @@ namespace ConsoleProject
 
             do
             {
-                //Console.WriteLine("1. Məhsullar Üzərində Əməliyyat Aparmaq");
-                //Console.WriteLine("2. Satışlar Üzərində Əməliyyat Aparmaq");
-                //Console.WriteLine("0. Sistemdən Çıxmaq");
-
-                Console.WriteLine("1. Display");
-                Console.WriteLine("2. Add");
-                Console.WriteLine("3. Delete");
-                Console.WriteLine("4. Search");
-                Console.WriteLine("5. Edit");
-                Console.WriteLine("6. Search For Price");
-                Console.WriteLine("7. Search For Category");
-
+                Console.WriteLine("1. Məhsullar Üzərində Əməliyyat Aparmaq");
+                Console.WriteLine("2. Satışlar Üzərində Əməliyyat Aparmaq");
                 Console.WriteLine("0. Sistemdən Çıxmaq");
+
+                //Console.WriteLine("1. Display");
+                //Console.WriteLine("2. Add");
+                //Console.WriteLine("3. Delete");
+                //Console.WriteLine("4. Search");
+                //Console.WriteLine("5. Edit");
+                //Console.WriteLine("6. Search For Price");
+                //Console.WriteLine("7. Search For Category");
+
+                //Console.WriteLine("0. Sistemdən Çıxmaq");
 
                 Console.Write("Bir əmr seçin : ");
 

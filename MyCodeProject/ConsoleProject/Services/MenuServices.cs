@@ -15,14 +15,14 @@ namespace ConsoleProject.Services
         static MarketServices operations = new();
         //static List<Categories> categories = new();
 
-      
+
         //public MenuServices() => categories.AddRange(categories);
 
         public static void DisplayProductList()
         {
           
             var table = new ConsoleTable("Nömrəsi","Adı","Kateqoriyası", "Qiyməti (AZN)", "Sayı");
-            foreach (var product in operations.products)
+            foreach (var product in operations.Products)
             {
                 table.AddRow(product.ID,product.Name, product.Category, product.Price,product.Quantity);
             }
@@ -34,7 +34,7 @@ namespace ConsoleProject.Services
         {           
             Console.Write("Məhsulun adını daxil edin : ");
             string name = Console.ReadLine();
-            if (operations.products.Exists(i => i.Name == name))
+            if (operations.Products.Exists(i => i.Name == name))
             {
                 Console.WriteLine("Bu məhsul artıq bazada var");
                 return;
@@ -130,7 +130,7 @@ namespace ConsoleProject.Services
         {
             Console.Write("Düzəliş ediləcək məhsulun nömrəsini daxil edin : ");
             int.TryParse(Console.ReadLine(), out int index);
-            if (!operations.products.Exists(i => i.ID == index))
+            if (!operations.Products.Exists(i => i.ID == index))
             {
                 Console.WriteLine("Nömrə Yanlışdır");
                 return;
@@ -239,9 +239,10 @@ namespace ConsoleProject.Services
                 x.Write();
                 //Console.WriteLine();
             }
-            catch (ArgumentOutOfRangeException ex)
+            catch (ArgumentException ex)
             {
-                Console.WriteLine(ex.Message);
+                //Console.WriteLine(ex.Message);
+                Console.WriteLine("Məhsulun Kateqoriyası yanlış daxil edilib");
             }
         }
     }

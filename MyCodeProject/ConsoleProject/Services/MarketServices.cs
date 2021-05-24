@@ -1,4 +1,5 @@
-﻿using ConsoleProject.Data.Entities;
+﻿using ConsoleProject.Data.Common;
+using ConsoleProject.Data.Entities;
 using ConsoleProject.Data.Enums;
 using System;
 using System.Collections.Generic;
@@ -8,17 +9,22 @@ using System.Threading.Tasks;
 
 namespace ConsoleProject.Services
 {
-    class MarketServices
+    class MarketServices : IMarketable
     {
-       public List<Product> products;
-       public List<Sale> sales;
-       List<Categories> categoryList = new();
-       
+        public List<Product> Products { get; set; }
+       public List<Sale> Sales { get; set; }
+
+        List<Categories> categoryList = new();
+
+        
+
+        //public List<Product> Products { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public MarketServices()
         {
-            products = new();
-            sales = new();
+            Products = new();
+            Sales = new();
+            
             categoryList.AddRange(Enum.GetValues<Categories>());
         }
 
@@ -43,7 +49,7 @@ namespace ConsoleProject.Services
             product.Price = price;
             product.Category = category;
             product.Quantity = quantity;
-            products.Add(product);
+            Products.Add(product);
         }
 
        public void DeleteProduct(int productNo)
@@ -51,11 +57,11 @@ namespace ConsoleProject.Services
             if (productNo == 0)
                throw new ArgumentNullException("productNo", "Məhsulun nömrəsi yanlış daxil edilb");
 
-            int index = products.FindIndex(i=>i.ID == productNo);
+            int index = Products.FindIndex(i=>i.ID == productNo);
             if (index==-1)
                 throw new KeyNotFoundException("Məhsul Tapılmadı");
 
-            products.RemoveAt(index);
+            Products.RemoveAt(index);
 
         }
 
@@ -64,7 +70,7 @@ namespace ConsoleProject.Services
             if (string.IsNullOrEmpty(text))
                 throw new ArgumentNullException("Daxil edilən mətn boşdur!");
 
-            var updatedProdects = products.Where(i=> i.Name.Contains(text));
+            var updatedProdects = Products.Where(i=> i.Name.Contains(text));
             //if (string.IsNullOrEmpty(text))
             //    throw new ArgumentNullException("");
 
@@ -74,14 +80,14 @@ namespace ConsoleProject.Services
 
         public void EditProduct(int productNo, Product data)
         {
-            foreach (var product in products)
+            foreach (var product in Products)
             {
                 if (product.ID == productNo)
                 {                    
                      if(!string.IsNullOrEmpty(data.Name))
                             product.Name = data.Name;
 
-                     if(data.Category!=null)
+                    if (data.Category != null)
                             product.Category = data.Category;
 
                     if(data.Price != 0)
@@ -101,7 +107,7 @@ namespace ConsoleProject.Services
             if (max <= 0)
                 throw new ArgumentOutOfRangeException("max", "Maksimum Dəyər 0-dan böyük olmalıdır");
 
-            var searchedProducts = products.Where(i=>i.Price < max && i.Price > min);
+            var searchedProducts = Products.Where(i=>i.Price < max && i.Price > min);
             //if (string.IsNullOrEmpty(text))
             //    throw new ArgumentNullException("");
 
@@ -115,13 +121,12 @@ namespace ConsoleProject.Services
             if (!categoryList.Contains(category))
                 throw new ArgumentException("Məhsulun Kateqoriyası yanlış daxil edilib");
 
-            var searchedProducts = products.Where(i => i.Category == category);
-            //if (string.IsNullOrEmpty(text))
-            //    throw new ArgumentNullException("");
-
+            var searchedProducts = Products.Where(i => i.Category == category);          
 
             return searchedProducts;
         }
+
+       
     }
 
 }
