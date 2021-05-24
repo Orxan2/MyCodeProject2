@@ -107,7 +107,7 @@ namespace ConsoleProject.Services
             if (max <= 0)
                 throw new ArgumentOutOfRangeException("max", "Maksimum Dəyər 0-dan böyük olmalıdır");
 
-            var searchedProducts = Products.Where(i=>i.Price < max && i.Price > min);
+            var searchedProducts = Products.Where(i=>i.Price <= max && i.Price >= min);
             //if (string.IsNullOrEmpty(text))
             //    throw new ArgumentNullException("");
 

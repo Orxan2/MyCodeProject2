@@ -22,13 +22,13 @@ namespace ConsoleProject.Data.Common
         public IEnumerable<Product> SearchProductForCategory(Categories category);
 
 
-        public void AddSale();
-        public void TakeFromSale();
-        public void DeleteSale();
-        public void SearchSaleForDateInterval();
-        public void SearchSaleForPrice();
-        public void SearchSaleForDate();
-        public void SearchSaleForID();
+        //public void AddSale();
+        //public void TakeFromSale();
+        //public void DeleteSale();
+        //public void SearchSaleForDateInterval();
+        //public void SearchSaleForPrice();
+        //public void SearchSaleForDate();
+        //public void SearchSaleForID();
 
 
     }
