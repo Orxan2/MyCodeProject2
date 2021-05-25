@@ -80,7 +80,7 @@ namespace ConsoleProject.Services
                 //Console.WriteLine("4. Search");
                 //Console.WriteLine("5. Edit");
                 Console.WriteLine("6. Search For Price");
-                //Console.WriteLine("7. Search For Category");
+                Console.WriteLine("7. Search For Date Interval");
 
                 Console.WriteLine("0. Sistemdən Çıxmaq");
 
@@ -114,9 +114,9 @@ namespace ConsoleProject.Services
                     case 6:
                         MenuServices.SearchSalesForPriceMenu();
                         break;
-                    //case 7:
-                    //    MenuServices.SearchProductMenuForCategory();
-                    //    break;
+                    case 7:
+                        MenuServices.SearchSalesForDateInterval();
+                        break;
                     case 0:
                         Console.WriteLine("Exit");
                         break;

@@ -346,19 +346,52 @@ namespace ConsoleProject.Services
 
             try
             {
-                var searchedProducts = operations.SearchSalesForPrice(minimum, maximum);
-                var x = new ConsoleTable("Nömrəsi", "Məbləği", "Məhsul Sayı", "Tarixi");
-                foreach (var searchedProduct in searchedProducts)
+                var searchedSales = operations.SearchSalesForPrice(minimum, maximum);
+                var searchTable = new ConsoleTable("Nömrəsi", "Məbləği", "Məhsul Sayı", "Tarixi");
+                foreach (var searchedSale in searchedSales)
                 {
-                    x.AddRow(searchedProduct.ID, searchedProduct.Price, searchedProduct.SaleItems.Count(), searchedProduct.Date);
+                    searchTable.AddRow(searchedSale.ID, searchedSale.Price, searchedSale.SaleItems.Count(), searchedSale.Date);
                 }
-                x.Write();
-                //Console.WriteLine();
+                searchTable.Write();
             }
             catch (ArgumentOutOfRangeException ex)
             {
                 Console.WriteLine(ex.Message);
             }
+        }
+
+       public static void SearchSalesForDateInterval()
+        {
+            Console.Write("Başlanğıc tarixi daxil edin : ");
+            DateTime.TryParse(Console.ReadLine(), out DateTime minimum);
+
+            Console.Write("Bitiş tarixi daxil edin : ");
+            DateTime.TryParse(Console.ReadLine(), out DateTime maximum);
+
+            try
+            {
+               var searchedSales = operations.SearchSalesForDateInterval(minimum,maximum);
+                var searchTable = new ConsoleTable("Nömrəsi", "Məbləği", "Məhsul Sayı", "Tarixi");
+                foreach (var searchedSale in searchedSales)
+                {
+                    searchTable.AddRow(searchedSale.ID, searchedSale.Price, searchedSale.SaleItems.Count(), searchedSale.Date);
+                }
+                searchTable.Write();
+            }
+            catch (ArgumentNullException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"{ex.GetType()} - {ex.Message}");
+                //Console.WriteLine("Gözlənilməz bir xəta baş verdi");
+            }
+
         }
 
     }

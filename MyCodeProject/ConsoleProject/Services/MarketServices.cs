@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleProject.Services
 {
+
     class MarketServices : IMarketable
     {
         public List<Product> Products { get; set; }
@@ -185,6 +186,22 @@ namespace ConsoleProject.Services
 
             return searchedSales;
 
+        }
+
+        public IEnumerable<Sale> SearchSalesForDateInterval(DateTime startDate,DateTime lastDate)
+        {
+            if (startDate.Year == 1)
+                throw new ArgumentNullException("startDate", "Başlanğıc tarixi yanlış daxil edilib");
+
+            if (lastDate.Year == 1)
+                throw new ArgumentNullException("lastDate", "Bitiş tarixi yanlış daxil edilib");
+
+            Console.WriteLine("FIRST DATE : {0} \n last Date : {1}",startDate,lastDate);
+            var searhedSales = Sales.Where(i => i.Date >= startDate && i.Date <= lastDate);
+            if (searhedSales.Count() == 0)
+                throw new KeyNotFoundException("Bu Tarixlərdə Satış Olmayıb");
+
+            return searhedSales;
         }
     }
 
