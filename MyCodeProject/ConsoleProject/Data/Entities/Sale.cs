@@ -12,12 +12,14 @@ namespace ConsoleProject.Data.Entities
         private static int _count;
 
         public double Price { get; set; }
-        public SaleItem SaleItem { get; set; }
+        public List<SaleItem> SaleItems { get; set; }
         public DateTime Date { get; set; }
         public Sale()
         {
             _count++;
             this.ID = _count;
+            Date = DateTime.Now;
+            SaleItems = new();
         }
     }
 }

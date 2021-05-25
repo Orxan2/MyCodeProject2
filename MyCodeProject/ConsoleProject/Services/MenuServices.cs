@@ -5,13 +5,15 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using ConsoleProject.Data.Entities;
+using System.Text;
+using System.Globalization;
 
 namespace ConsoleProject.Services
 {
     
    public static class MenuServices
     {
-        
+       
         static MarketServices operations = new();
         //static List<Categories> categories = new();
 
@@ -31,7 +33,7 @@ namespace ConsoleProject.Services
         }
 
         public static void AddProductMenu()             
-        {           
+        {          
             Console.Write("Məhsulun adını daxil edin : ");
             string name = Console.ReadLine();
             if (operations.Products.Exists(i => i.Name == name))
@@ -39,15 +41,17 @@ namespace ConsoleProject.Services
                 Console.WriteLine("Bu məhsul artıq bazada var");
                 return;
             }
-            Console.Write("Məhsulun qiymətini daxil edin : ");
-            //Əgər yanlış daxil edilsə price = 0 olacaq və ArgumentOutOfRangeException yaranacaq
-            double.TryParse(Console.ReadLine(), out double price);
+            
 
             Console.Write("Məhsulun kateqoriyasını daxil edin : ");
             string category = Console.ReadLine();
 
             Console.Write("Məhsulun sayını daxil edin : ");
             int.TryParse(Console.ReadLine(), out int quantity);
+
+            Console.Write("Məhsulun qiymətini daxil edin : ");
+            double price = double.Parse(Console.ReadLine());
+
 
             try
             {            
@@ -243,6 +247,54 @@ namespace ConsoleProject.Services
             {
                 //Console.WriteLine(ex.Message);
                 Console.WriteLine("Məhsulun Kateqoriyası yanlış daxil edilib");
+            }
+        }
+
+
+        public static void AddSaleMenu()
+        {
+            List<Product> saledProducts = new();
+            string selection = string.Empty;
+            
+            do
+            {
+                Product saledProduct = new();               
+
+                Console.Write("Satılan Məhsulun kodunu daxil edin : ");
+                int.TryParse(Console.ReadLine(), out int code);
+
+                Console.Write("Məhsulun sayını daxil edin : ");
+                int.TryParse(Console.ReadLine(), out int quantity);
+
+                saledProduct.ID = code;
+                saledProduct.Quantity = quantity;
+                saledProducts.Add(saledProduct);
+
+                Console.WriteLine("Yeni Məhsul Əlavə etmək üçün 1-ə,əks təqdirdə başqa hərhansısa yere toxunun.");
+                selection = Console.ReadLine();
+
+            } while (selection == "1");
+            
+
+          
+            try
+            {
+                operations.AddSale(saledProducts);
+                Console.WriteLine("Sale Inserted");
+            }                     
+            catch (ArgumentOutOfRangeException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            catch (KeyNotFoundException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }         
+            catch (Exception ex)
+            {
+                Console.WriteLine("Gözlənilməz bir xəta baş verdi");
+                //Console.WriteLine($"Message : {ex.Message} \n Type : {ex.GetType()}");
             }
         }
     }

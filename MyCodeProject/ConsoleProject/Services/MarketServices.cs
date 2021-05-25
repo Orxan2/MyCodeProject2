@@ -126,7 +126,38 @@ namespace ConsoleProject.Services
             return searchedProducts;
         }
 
-       
+
+        public void AddSale(List<Product> saledProducts)
+        {
+
+            Sale sale = new();
+            
+            foreach (var saledProduct in saledProducts)
+            {
+
+                if (saledProduct.ID<=0)
+                    throw new ArgumentNullException("Məhsulun kodu düzgün daxil edilməyib");
+
+
+                var product = Products.FirstOrDefault(i=>i.ID == saledProduct.ID);
+
+                if (product == null)
+                    throw new KeyNotFoundException("Məhsul Tapılmadı");
+
+                if (saledProduct.Quantity > product.Quantity)
+                    throw new KeyNotFoundException("Bazada Bu QƏdər Məhsul Yoxdur");
+                SaleItem saleItem = new();
+                saleItem.Product = product;
+                saleItem.Quantity = saledProduct.Quantity;
+
+                sale.SaleItems.Add(saleItem);
+            }
+
+            Sales.Add(sale);           
+          
+        }
+
+        
     }
 
 }
