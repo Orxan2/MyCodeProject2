@@ -149,10 +149,11 @@ namespace ConsoleProject.Services
                 SaleItem saleItem = new();
                 saleItem.Product = product;
                 saleItem.Quantity = saledProduct.Quantity;
-
+                sale.Price += saleItem.Product.Price * saleItem.Quantity;               
+                Products.FirstOrDefault(i => i.ID == saledProduct.ID).Quantity -= saledProduct.Quantity;
                 sale.SaleItems.Add(saleItem);
             }
-
+            
             Sales.Add(sale);           
           
         }

@@ -74,7 +74,7 @@ namespace ConsoleProject.Services
 
             do
             {
-                //Console.WriteLine("1. Display");
+                Console.WriteLine("1. Display");
                 Console.WriteLine("2. Add");
                 //Console.WriteLine("3. Delete");
                 //Console.WriteLine("4. Search");
@@ -96,9 +96,9 @@ namespace ConsoleProject.Services
 
                 switch (selection)
                 {
-                    //case 1:
-                    //    MenuServices.DisplayProductList();
-                    //    break;
+                    case 1:
+                        MenuServices.DisplaySaleList();
+                        break;
                     case 2:
                         MenuServices.AddSaleMenu();
                         break;

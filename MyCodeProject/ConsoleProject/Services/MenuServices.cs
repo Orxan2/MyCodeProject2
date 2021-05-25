@@ -28,9 +28,23 @@ namespace ConsoleProject.Services
             {
                 table.AddRow(product.ID, product.Name, product.Category, product.Price, product.Quantity);
             }
+            table.Write();          
+        }
+        public static void DisplaySaleList()
+        {
+
+            var table = new ConsoleTable("Nömrəsi", "Məbləği", "Məhsul Sayı", "Tarixi");
+            foreach (var sale in operations.Sales)
+            {
+                table.AddRow(sale.ID, sale.Price, sale.SaleItems.Sum(i=>i.Quantity), sale.Date);
+            }
             table.Write();
             //Console.WriteLine();
         }
+
+
+
+
 
         public static void AddProductMenu()             
         {          
@@ -282,7 +296,7 @@ namespace ConsoleProject.Services
                 operations.AddSale(saledProducts);
                 Console.WriteLine("Sale Inserted");
             }                     
-            catch (ArgumentOutOfRangeException ex)
+            catch (ArgumentNullException ex)
             {
                 Console.WriteLine(ex.Message);
             }
