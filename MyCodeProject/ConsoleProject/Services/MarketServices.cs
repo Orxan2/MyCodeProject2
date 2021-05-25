@@ -150,15 +150,42 @@ namespace ConsoleProject.Services
                 saleItem.Product = product;
                 saleItem.Quantity = saledProduct.Quantity;
                 sale.Price += saleItem.Product.Price * saleItem.Quantity;               
-                Products.FirstOrDefault(i => i.ID == saledProduct.ID).Quantity -= saledProduct.Quantity;
+                //Products.FirstOrDefault(i => i.ID == saledProduct.ID).Quantity -= saledProduct.Quantity;
                 sale.SaleItems.Add(saleItem);
             }
-            
+            foreach (var saledProduct in saledProducts)//2-ci və ya sonrakı satış məhsullarını əlavə edəndə Exception olsa 1-i silməsin deyə təkrar yazdım
+            {
+                Products.FirstOrDefault(i => i.ID == saledProduct.ID).Quantity -= saledProduct.Quantity;
+            }
             Sales.Add(sale);           
           
         }
 
-        
+        public void DeleteSale(int saleId)
+        {
+            if (saleId <= 0)
+                throw new ArgumentNullException("saleId", "Satışın kodu düzgün daxil edilməyib");
+
+            int index = Sales.FindIndex(i=>i.ID == saleId);
+
+            if (index==-1)
+                throw new KeyNotFoundException("Satış Tapılmadı");
+
+            Sales.RemoveAt(index);
+        }
+
+        public IEnumerable<Sale> SearchSalesForPrice(double minValue,double maxValue)
+        {
+            if (minValue <= 0)
+                throw new ArgumentOutOfRangeException("minValue", "Minimum Qiymət 0-dan böyük olmalıdır");
+            if (maxValue <= 0)
+                throw new ArgumentOutOfRangeException("maxValue", "Maksimum Qiymət 0-dan böyük olmalıdır");
+
+            var searchedSales = Sales.Where(i=>i.Price<=maxValue && i.Price>=minValue);
+
+            return searchedSales;
+
+        }
     }
 
 }

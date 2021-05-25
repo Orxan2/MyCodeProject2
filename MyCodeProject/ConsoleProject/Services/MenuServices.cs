@@ -36,7 +36,7 @@ namespace ConsoleProject.Services
             var table = new ConsoleTable("Nömrəsi", "Məbləği", "Məhsul Sayı", "Tarixi");
             foreach (var sale in operations.Sales)
             {
-                table.AddRow(sale.ID, sale.Price, sale.SaleItems.Sum(i=>i.Quantity), sale.Date);
+                table.AddRow(sale.ID, sale.Price, sale.SaleItems.Count(), sale.Date);
             }
             table.Write();
             //Console.WriteLine();
@@ -305,11 +305,61 @@ namespace ConsoleProject.Services
             {
                 Console.WriteLine(ex.Message);
             }         
-            catch (Exception ex)
+            catch (Exception)
             {
                 Console.WriteLine("Gözlənilməz bir xəta baş verdi");
                 //Console.WriteLine($"Message : {ex.Message} \n Type : {ex.GetType()}");
             }
         }
+
+        public static void DeleteSaleMenu()
+        {
+            Console.WriteLine("Silinəcək Satışın kodunu daxil edin : ");
+            //string saleIdStr = Console.ReadLine();
+            int.TryParse(Console.ReadLine(), out int saleId);
+            try
+            {
+                operations.DeleteSale(saleId);
+                Console.WriteLine("Satış silindi");
+            }
+            catch (ArgumentNullException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Gözlənilməz bir xəta baş verdi");
+            }
+        }
+
+        public static void SearchSalesForPriceMenu()
+        {
+            Console.Write("Minimum dəyər daxil edin : ");
+            double.TryParse(Console.ReadLine(), out double minimum);
+
+            Console.Write("Maksimum dəyər daxil edin : ");
+            double.TryParse(Console.ReadLine(), out double maximum);
+
+            try
+            {
+                var searchedProducts = operations.SearchSalesForPrice(minimum, maximum);
+                var x = new ConsoleTable("Nömrəsi", "Məbləği", "Məhsul Sayı", "Tarixi");
+                foreach (var searchedProduct in searchedProducts)
+                {
+                    x.AddRow(searchedProduct.ID, searchedProduct.Price, searchedProduct.SaleItems.Count(), searchedProduct.Date);
+                }
+                x.Write();
+                //Console.WriteLine();
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
     }
 }
