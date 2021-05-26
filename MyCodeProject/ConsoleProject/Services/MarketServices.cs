@@ -12,7 +12,7 @@ namespace ConsoleProject.Services
 
     class MarketServices : IMarketable
     {
-        public List<Product> Products { get; set; }
+       public List<Product> Products { get; set; }
        public List<Sale> Sales { get; set; }
 
         List<Categories> categoryList = new();
@@ -167,12 +167,43 @@ namespace ConsoleProject.Services
             if (saleId <= 0)
                 throw new ArgumentNullException("saleId", "Satışın kodu düzgün daxil edilməyib");
 
-            int index = Sales.FindIndex(i=>i.ID == saleId);
+            Sale sale = Sales.FirstOrDefault(i=>i.ID == saleId);
 
-            if (index==-1)
+            if (sale == null)
                 throw new KeyNotFoundException("Satış Tapılmadı");
 
-            Sales.RemoveAt(index);
+            foreach (var saleItem in sale.SaleItems)
+            {
+                Product product = (Products.FirstOrDefault(i => i.ID == saleItem.Product.ID));
+                //if (product == null)
+                //{
+                //    Product sameProduct = (Products.FirstOrDefault(i => i.Name == saleItem.Product.Name));
+                //    sameproduct += saleİtem.Quantity
+
+                //    if (oldProduct == null)
+                //    {
+                //        oldProduct = new();
+                //        oldProduct.Category = saleItem.Product.Category;
+                //        oldProduct.Name = saleItem.Product.Name;
+                //        oldProduct.Price = saleItem.Product.Price;
+                //        oldProduct.Quantity = 1;
+                //        Products.Add(oldProduct);
+                //    }
+
+
+                //} əgər product silinmişsə düzəltmək
+
+                //else
+                //{
+                //    product.Quantity += saleItem.Quantity;
+                //}
+
+
+                product.Quantity += saleItem.Quantity;// silinmeyibse mehsul
+            }
+
+
+            Sales.Remove(sale);
         }
 
         public IEnumerable<Sale> SearchSalesForPrice(double minValue,double maxValue)
@@ -203,6 +234,22 @@ namespace ConsoleProject.Services
 
             return searhedSales;
         }
+
+        public Sale DisplaySaleİtems(int saleId)
+        {
+            if (saleId == 0)
+                throw new ArgumentNullException("saleId","Satışın kodu yanlış daxil edilib");
+
+            Sale sale = Sales.FirstOrDefault(i => i.ID == saleId);
+
+            if (sale == null)
+                throw new ArgumentNullException("sale", "Axtarılan satış tapılmadı");
+
+            return sale;
+
+
+        }
+
     }
 
 }

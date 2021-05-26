@@ -394,5 +394,35 @@ namespace ConsoleProject.Services
 
         }
 
+        public static void DisplaySaleİtemsMenu()
+        {
+            Console.WriteLine("Satışın kodunu daxil edin : ");
+            int.TryParse(Console.ReadLine(),out int saleId);
+
+            try
+            {
+                Sale searchedSale = operations.DisplaySaleİtems(saleId);
+                var saleTable = new ConsoleTable("Nömrəsi", "Məbləği", "Məhsul Sayı", "Tarixi");
+                saleTable.AddRow(searchedSale.ID, searchedSale.Price, searchedSale.SaleItems.Count(), searchedSale.Date);
+                saleTable.Write();
+                
+                var saleItemsTable = new ConsoleTable("Nömrəsi", "Məhsul Adı", "Məhsul Sayı");
+                foreach (var SaleItem in searchedSale.SaleItems)
+                {
+                    saleItemsTable.AddRow(SaleItem.ID, SaleItem.Product.Name, SaleItem.Quantity);
+                }
+                saleItemsTable.Write();
+            }
+            catch (ArgumentNullException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Gözlənilməz bir xəta baş verdi");
+            }
+        }
+
+
     }
 }

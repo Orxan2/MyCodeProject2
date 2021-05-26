@@ -28,7 +28,7 @@ namespace ConsoleProject.Data.Common
         public IEnumerable<Sale> SearchSalesForDateInterval(DateTime first,DateTime last);
         public IEnumerable<Sale> SearchSalesForPrice(double minValue, double maxValue);
         //public void SearchSaleForDate();
-        //public void SearchSaleForID();
+        public Sale DisplaySaleİtems(int saleId);
 
 
     }
