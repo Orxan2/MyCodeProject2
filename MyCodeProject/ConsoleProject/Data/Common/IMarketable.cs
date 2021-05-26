@@ -23,11 +23,11 @@ namespace ConsoleProject.Data.Common
 
 
         public void AddSale(List<Product> saledProducts);
-        //public void TakeFromSale();
+        public void ReturnProductFromSale(int saleId, string name, int quantity);
         public void DeleteSale(int saleİd);
         public IEnumerable<Sale> SearchSalesForDateInterval(DateTime first,DateTime last);
         public IEnumerable<Sale> SearchSalesForPrice(double minValue, double maxValue);
-        //public void SearchSaleForDate();
+        public IEnumerable<Sale> SearchSalesForDate(DateTime date);
         public Sale DisplaySaleİtems(int saleId);
 
 

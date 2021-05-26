@@ -423,6 +423,61 @@ namespace ConsoleProject.Services
             }
         }
 
+        public static void SearchSalesForDate()
+        {
+            Console.Write("Satış tarixi daxil edin : ");
+            DateTime.TryParse(Console.ReadLine(), out DateTime minimum);           
 
+            try
+            {
+                var searchedSales = operations.SearchSalesForDate(minimum);
+                var searchTable = new ConsoleTable("Nömrəsi", "Məbləği", "Məhsul Sayı", "Tarixi");
+                foreach (var searchedSale in searchedSales)
+                {
+                    searchTable.AddRow(searchedSale.ID, searchedSale.Price, searchedSale.SaleItems.Count(), searchedSale.Date);
+                }
+                searchTable.Write();
+            }
+            catch (ArgumentNullException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"{ex.GetType()} - {ex.Message}");
+                //Console.WriteLine("Gözlənilməz bir xəta baş verdi");
+            }
+        }
+
+        public static void ReturnProductFromSaleMenu()
+        {
+            Console.WriteLine("Hans; mehsulu geri qaytarirsiniz : ");
+            string name = Console.ReadLine();
+
+            Console.WriteLine("Hansi satisdan silineceek : ");
+            int.TryParse(Console.ReadLine(),out int saleId);
+
+            Console.WriteLine("Say : ");
+            int.TryParse(Console.ReadLine(), out int quantity);
+
+            try
+            {
+                operations.ReturnProductFromSale(saleId,name,quantity);
+                Console.WriteLine("mEHSUL GERI QAYTARILDI");
+            }
+            catch (ArgumentNullException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+        }
     }
 }

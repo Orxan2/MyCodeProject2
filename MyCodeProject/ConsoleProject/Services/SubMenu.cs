@@ -76,13 +76,14 @@ namespace ConsoleProject.Services
 
             do
             {
-                Console.WriteLine("1. Display");
-                Console.WriteLine("2. Add");
+               
+                Console.WriteLine("1. Add");
+                Console.WriteLine("2. Return Product From Sale");
                 Console.WriteLine("3. Delete");
-                //Console.WriteLine("4. Search");
-                //Console.WriteLine("5. Edit");
-                Console.WriteLine("6. Search For Price");
-                Console.WriteLine("7. Search For Date Interval");
+                Console.WriteLine("4. Display");
+                Console.WriteLine("5. Search For Date Interval");
+                Console.WriteLine("6. Search For Price");                
+                Console.WriteLine("7. Search For Date");
                 Console.WriteLine("8. Search Sale and Sale Items For ID");
                 Console.WriteLine("0. Sistemdən Çıxmaq");
 
@@ -99,25 +100,25 @@ namespace ConsoleProject.Services
                 switch (selection)
                 {
                     case 1:
-                        MenuServices.DisplaySaleList();
+                        MenuServices.AddSaleMenu();
                         break;
                     case 2:
-                        MenuServices.AddSaleMenu();
+                        MenuServices.ReturnProductFromSaleMenu();
                         break;
                     case 3:
                         MenuServices.DeleteSaleMenu();
                         break;
-                    //case 4:
-                    //    MenuServices.SearchProductMenu();
-                    //    break;
-                    //case 5:
-                    //    MenuServices.EditProductMenu();
-                    //    break;
+                    case 4:
+                        MenuServices.DisplaySaleList();
+                        break;
+                    case 5:
+                        MenuServices.SearchSalesForDateInterval();
+                        break;
                     case 6:
                         MenuServices.SearchSalesForPriceMenu();
                         break;
                     case 7:
-                        MenuServices.SearchSalesForDateInterval();
+                        MenuServices.SearchSalesForDate();
                         break;
                     case 8:
                         MenuServices.DisplaySaleİtemsMenu();

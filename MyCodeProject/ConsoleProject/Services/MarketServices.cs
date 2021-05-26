@@ -175,23 +175,28 @@ namespace ConsoleProject.Services
             foreach (var saleItem in sale.SaleItems)
             {
                 Product product = (Products.FirstOrDefault(i => i.ID == saleItem.Product.ID));
+
                 //if (product == null)
                 //{
                 //    Product sameProduct = (Products.FirstOrDefault(i => i.Name == saleItem.Product.Name));
-                //    sameproduct += saleİtem.Quantity
 
-                //    if (oldProduct == null)
+
+                //    if (sameProduct == null)
                 //    {
-                //        oldProduct = new();
-                //        oldProduct.Category = saleItem.Product.Category;
-                //        oldProduct.Name = saleItem.Product.Name;
-                //        oldProduct.Price = saleItem.Product.Price;
-                //        oldProduct.Quantity = 1;
-                //        Products.Add(oldProduct);
+                //        sameProduct = new();
+                //        sameProduct.Category = saleItem.Product.Category;
+                //        sameProduct.Name = saleItem.Product.Name;
+                //        sameProduct.Price = saleItem.Product.Price;
+                //        sameProduct.Quantity = 1;
+                //        Products.Add(sameProduct);
+                //    }
+                //    else
+                //    {
+                //        sameProduct.Quantity += saleItem.Quantity;
                 //    }
 
-
-                //} əgər product silinmişsə düzəltmək
+                //}
+                //əgər product silinmişsə düzəltmək
 
                 //else
                 //{
@@ -226,8 +231,7 @@ namespace ConsoleProject.Services
 
             if (lastDate.Year == 1)
                 throw new ArgumentNullException("lastDate", "Bitiş tarixi yanlış daxil edilib");
-
-            Console.WriteLine("FIRST DATE : {0} \n last Date : {1}",startDate,lastDate);
+            
             var searhedSales = Sales.Where(i => i.Date >= startDate && i.Date <= lastDate);
             if (searhedSales.Count() == 0)
                 throw new KeyNotFoundException("Bu Tarixlərdə Satış Olmayıb");
@@ -248,6 +252,48 @@ namespace ConsoleProject.Services
             return sale;
 
 
+        }
+
+        public IEnumerable<Sale> SearchSalesForDate(DateTime date)
+        {
+            if (date.Year == 1)
+                throw new ArgumentNullException("date", "Tarix yanlış daxil edilib");
+
+            var searhedSales = Sales.Where(i => i.Date.Day == date.Day);
+            if (searhedSales.Count() == 0)
+                throw new KeyNotFoundException("Bu Tarixdə Satış Olmayıb");
+
+            return searhedSales;
+
+        }
+
+        public void ReturnProductFromSale(int saleId,string name,int quantity)
+        {
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentNullException("name", "Məhsulun adı doğru daxil edilməyib");
+
+            if (quantity==0)
+                throw new ArgumentNullException("quantity", "Məhsulun sayı doğru daxil edilməyib");
+
+            if (saleId == 0)
+                throw new ArgumentNullException();
+
+          Sale sale = Sales.FirstOrDefault(i=>i.ID == saleId);
+
+            if (sale == null)
+                throw new ArgumentException("Satış tapılmadı");
+
+            foreach (var saleItem in sale.SaleItems)
+            {
+                if (saleItem.Product.Name == name)
+                {
+                    saleItem.Quantity -= quantity;
+                    Products.FirstOrDefault(i=>i.Name == name).Quantity += quantity;
+                }
+            }
+            
+
+            //sale.SaleItems.Remove(searchedSaleItem);
         }
 
     }
