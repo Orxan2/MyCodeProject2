@@ -50,7 +50,9 @@ namespace ConsoleProject.Services
             product.Price = price;
             product.Category = category;
             product.Quantity = quantity;
+            product.IsDeleted = false;
             Products.Add(product);
+            
         }
 
        public void DeleteProduct(int productNo)
@@ -62,10 +64,31 @@ namespace ConsoleProject.Services
             if (index==-1)
                 throw new KeyNotFoundException("Məhsul Tapılmadı");
 
-            Products.RemoveAt(index);
+            //Products.RemoveAt(index);
+            foreach (var product in Products)
+            {
+                if (product.ID == productNo)
+                    product.IsDeleted = true;
+            }
 
         }
+        public void ReturnProduct(int productNo)
+        {
+            if (productNo == 0)
+                throw new ArgumentNullException("productNo", "Geri Qaytarmaq istediyiniz mehsulun nomresini daxil edin");
 
+            int index = Products.FindIndex(i => i.ID == productNo);
+            if (index == -1)
+                throw new KeyNotFoundException("Məhsul Tapılmadı");
+
+            //Products.RemoveAt(index);
+            foreach (var product in Products)
+            {
+                if (product.ID == productNo)
+                    product.IsDeleted = false;
+            }
+
+        }
         public IEnumerable<Product> SearchProduct(string text)
         {
             if (string.IsNullOrEmpty(text))
@@ -142,7 +165,7 @@ namespace ConsoleProject.Services
 
                 var product = Products.FirstOrDefault(i=>i.ID == saledProduct.ID);
 
-                if (product == null)
+                if (product == null || product.IsDeleted == true)
                     throw new KeyNotFoundException("Məhsul Tapılmadı");
 
                 if (saledProduct.Quantity > product.Quantity)
@@ -164,45 +187,23 @@ namespace ConsoleProject.Services
 
         public void DeleteSale(int saleId)
         {
-            if (saleId <= 0)
-                throw new ArgumentNullException("saleId", "Satışın kodu düzgün daxil edilməyib");
+            if (saleId == 0)
+                throw new ArgumentNullException("saleId", "Satisin kodu dogru daxil edilmeyib");
+
+            if (Sales.Exists(i => i.ID != saleId))
+                throw new KeyNotFoundException("daxil etdiyiniz koda uygun satis yoxdur");
 
             Sale sale = Sales.FirstOrDefault(i=>i.ID == saleId);
 
-            if (sale == null)
-                throw new KeyNotFoundException("Satış Tapılmadı");
+            //if (sale == null)
+            //    throw new KeyNotFoundException("Satış Tapılmadı");
 
             foreach (var saleItem in sale.SaleItems)
             {
                 Product product = (Products.FirstOrDefault(i => i.ID == saleItem.Product.ID));
 
-                //if (product == null)
-                //{
-                //    Product sameProduct = (Products.FirstOrDefault(i => i.Name == saleItem.Product.Name));
-
-
-                //    if (sameProduct == null)
-                //    {
-                //        sameProduct = new();
-                //        sameProduct.Category = saleItem.Product.Category;
-                //        sameProduct.Name = saleItem.Product.Name;
-                //        sameProduct.Price = saleItem.Product.Price;
-                //        sameProduct.Quantity = 1;
-                //        Products.Add(sameProduct);
-                //    }
-                //    else
-                //    {
-                //        sameProduct.Quantity += saleItem.Quantity;
-                //    }
-
-                //}
-                //əgər product silinmişsə düzəltmək
-
-                //else
-                //{
-                //    product.Quantity += saleItem.Quantity;
-                //}
-
+                if (product.IsDeleted == true)
+                    product.IsDeleted = false;
 
                 product.Quantity += saleItem.Quantity;// silinmeyibse mehsul
             }
@@ -267,33 +268,47 @@ namespace ConsoleProject.Services
 
         }
 
-        public void ReturnProductFromSale(int saleId,string name,int quantity)
+        public void ReturnProductFromSale(string name,int saleId,int quantity)
         {
-            if (string.IsNullOrEmpty(name))
+            if (saleId == 0)
+                throw new ArgumentNullException("saleId", "Satisin kodu dogru daxil edilmeyib");
+
+            if (Sales.Exists(i => i.ID != saleId))
+                throw new KeyNotFoundException("daxil etdiyiniz koda uygun satis yoxdur");
+
+            Sale sale = Sales.FirstOrDefault(i => i.ID == saleId);
+          
+            if (string.IsNullOrEmpty(name)) 
                 throw new ArgumentNullException("name", "Məhsulun adı doğru daxil edilməyib");
 
+            if (sale.SaleItems.Exists(i => i.Product.Name != name))
+                throw new KeyNotFoundException("Qebzde satilmis mehsullar arasinda bu mehsul yoxdur");
+
             if (quantity==0)
-                throw new ArgumentNullException("quantity", "Məhsulun sayı doğru daxil edilməyib");
+                throw new ArgumentNullException("quantity", "Qebzdeki satilmis Məhsulun sayı doğru daxil edilməyib");     
+            if(quantity > sale.SaleItems.Where(i => i.Product.Name == name).Sum(i => i.Quantity))
 
-            if (saleId == 0)
-                throw new ArgumentNullException();
+                throw new ArgumentOutOfRangeException("quantity", "Qebzdeki mehsul bu qeder cox deyil");
 
-          Sale sale = Sales.FirstOrDefault(i=>i.ID == saleId);
-
-            if (sale == null)
-                throw new ArgumentException("Satış tapılmadı");
+            //if (sale == null)
+            //    throw new ArgumentException("Satış tapılmadı");
 
             foreach (var saleItem in sale.SaleItems)
             {
                 if (saleItem.Product.Name == name)
                 {
-                    saleItem.Quantity -= quantity;
-                    Products.FirstOrDefault(i=>i.Name == name).Quantity += quantity;
+                    if (saleItem.Product.IsDeleted == true)
+                        saleItem.Product.IsDeleted = false;
+
+                    saleItem.Quantity -= quantity; 
+                    saleItem.Product.Quantity += quantity;
+                    sale.Price -= quantity * saleItem.Product.Price;
+                  
                 }
             }
-            
 
-            //sale.SaleItems.Remove(searchedSaleItem);
+
+            
         }
 
     }

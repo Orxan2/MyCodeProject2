@@ -18,10 +18,11 @@ namespace ConsoleProject.Services
                 Console.WriteLine("1. Display");
                 Console.WriteLine("2. Add");
                 Console.WriteLine("3. Delete");
-                Console.WriteLine("4. Search");
-                Console.WriteLine("5. Edit");
-                Console.WriteLine("6. Search For Price");
-                Console.WriteLine("7. Search For Category");
+                Console.WriteLine("4. Berpa");
+                Console.WriteLine("5. Search");
+                Console.WriteLine("6. Edit");
+                Console.WriteLine("7. Search For Price");
+                Console.WriteLine("8. Search For Category");
                 
 
                 Console.WriteLine("0. Sistemdən Çıxmaq");
@@ -48,15 +49,18 @@ namespace ConsoleProject.Services
                         MenuServices.DeleteProductMenu();
                         break;
                     case 4:
-                        MenuServices.SearchProductMenu();
+                        MenuServices.ReturnProductMenu();
                         break;
                     case 5:
-                        MenuServices.EditProductMenu();
+                        MenuServices.SearchProductMenu();
                         break;
                     case 6:
-                        MenuServices.SearchProductMenuForPrice();
+                        MenuServices.EditProductMenu();
                         break;
                     case 7:
+                        MenuServices.SearchProductMenuForPrice();
+                        break;
+                    case 8:
                         MenuServices.SearchProductMenuForCategory();
                         break;
                    

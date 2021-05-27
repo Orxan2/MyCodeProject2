@@ -16,10 +16,12 @@ namespace ConsoleProject.Data.Entities
         public double Price { get; set; }
         public Categories Category { get; set; }
         public int Quantity { get; set; }
+        public bool IsDeleted { get; set; }
         public Product()
         {
              _count++;
             this.ID = _count;
+            IsDeleted = false;
           
         }
     }

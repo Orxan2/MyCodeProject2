@@ -25,8 +25,10 @@ namespace ConsoleProject.Services
 
             var table = new ConsoleTable("Nömrəsi", "Adı", "Kateqoriyası", "Qiyməti (AZN)", "Sayı");
             foreach (var product in operations.Products)
-            {
-                table.AddRow(product.ID, product.Name, product.Category, product.Price, product.Quantity);
+            { 
+                if (product.IsDeleted == false)
+                    table.AddRow(product.ID, product.Name, product.Category, product.Price, product.Quantity);
+
             }
             table.Write();          
         }
@@ -36,7 +38,7 @@ namespace ConsoleProject.Services
             var table = new ConsoleTable("Nömrəsi", "Məbləği", "Məhsul Sayı", "Tarixi");
             foreach (var sale in operations.Sales)
             {
-                table.AddRow(sale.ID, sale.Price, sale.SaleItems.Count(), sale.Date);
+                table.AddRow(sale.ID, sale.Price, sale.SaleItems.Sum(i=>i.Quantity), sale.Date);
             }
             table.Write();
             //Console.WriteLine();
@@ -121,7 +123,26 @@ namespace ConsoleProject.Services
             }
            
         }
+        public static void ReturnProductMenu()
+        {
+            Console.Write("berpa edilecek məhsulun nömrəsini daxil edin : ");
+            int.TryParse(Console.ReadLine(), out int index);
 
+            try
+            {
+                operations.ReturnProduct(index);
+                Console.WriteLine("Məhsul berpa edildi");
+            }
+            catch (ArgumentNullException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+        }
         public static void SearchProductMenu()
         {
             Console.Write("Məhsulun adını daxil edin : ");
@@ -130,12 +151,13 @@ namespace ConsoleProject.Services
             try
             {
                var searchedProducts = operations.SearchProduct(search);
-                var x = new ConsoleTable("Nömrəsi", "Adı", "Kateqoriyası", "Qiyməti (AZN)", "Sayı");
+                var table = new ConsoleTable("Nömrəsi", "Adı", "Kateqoriyası", "Qiyməti (AZN)", "Sayı");
                 foreach (var searchedProduct in searchedProducts)
                 {
-                    x.AddRow(searchedProduct.ID, searchedProduct.Name, searchedProduct.Category, searchedProduct.Price, searchedProduct.Quantity);
+                    if (searchedProduct.IsDeleted == false)
+                        table.AddRow(searchedProduct.ID, searchedProduct.Name, searchedProduct.Category, searchedProduct.Price, searchedProduct.Quantity);
                 }
-                x.Write();
+                table.Write();
                 //Console.WriteLine();
             }
             catch (ArgumentNullException ex)
@@ -227,12 +249,13 @@ namespace ConsoleProject.Services
             try
             {
                 var searchedProducts = operations.SearchProductForPrice(minimum,maximum);
-                var x = new ConsoleTable("Nömrəsi", "Adı", "Kateqoriyası", "Qiyməti (AZN)", "Sayı");
+                var table = new ConsoleTable("Nömrəsi", "Adı", "Kateqoriyası", "Qiyməti (AZN)", "Sayı");
                 foreach (var searchedProduct in searchedProducts)
                 {
-                    x.AddRow(searchedProduct.ID, searchedProduct.Name, searchedProduct.Category, searchedProduct.Price, searchedProduct.Quantity);
+                    if (searchedProduct.IsDeleted == false)
+                        table.AddRow(searchedProduct.ID, searchedProduct.Name, searchedProduct.Category, searchedProduct.Price, searchedProduct.Quantity);
                 }
-                x.Write();
+                table.Write();
                 //Console.WriteLine();
             }
             catch (ArgumentOutOfRangeException ex)
@@ -249,12 +272,13 @@ namespace ConsoleProject.Services
             try
             {
                 var searchedProducts = operations.SearchProductForCategory(Enum.Parse<Categories>(category));
-                var x = new ConsoleTable("Nömrəsi", "Adı", "Kateqoriyası", "Qiyməti (AZN)", "Sayı");
+                var table = new ConsoleTable("Nömrəsi", "Adı", "Kateqoriyası", "Qiyməti (AZN)", "Sayı");
                 foreach (var searchedProduct in searchedProducts)
                 {
-                    x.AddRow(searchedProduct.ID, searchedProduct.Name, searchedProduct.Category, searchedProduct.Price, searchedProduct.Quantity);
+                    if (searchedProduct.IsDeleted == false)
+                        table.AddRow(searchedProduct.ID, searchedProduct.Name, searchedProduct.Category, searchedProduct.Price, searchedProduct.Quantity);
                 }
-                x.Write();
+                table.Write();
                 //Console.WriteLine();
             }
             catch (ArgumentException ex)
@@ -287,8 +311,7 @@ namespace ConsoleProject.Services
                 Console.WriteLine("Yeni Məhsul Əlavə etmək üçün 1-ə,əks təqdirdə başqa hərhansısa yere toxunun.");
                 selection = Console.ReadLine();
 
-            } while (selection == "1");
-            
+            } while (selection == "1");           
 
           
             try
@@ -466,18 +489,26 @@ namespace ConsoleProject.Services
 
             try
             {
-                operations.ReturnProductFromSale(saleId,name,quantity);
+                operations.ReturnProductFromSale(name,saleId, quantity);
                 Console.WriteLine("mEHSUL GERI QAYTARILDI");
             }
             catch (ArgumentNullException ex)
             {
                 Console.WriteLine(ex.Message);
             }
-            catch (ArgumentException ex)
+            catch (KeyNotFoundException ex)
             {
                 Console.WriteLine(ex.Message);
             }
-
+            catch (ArgumentOutOfRangeException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("gozlenilmez xeta oldu");
+            }
+           
         }
     }
 }

@@ -23,7 +23,7 @@ namespace ConsoleProject.Data.Common
 
 
         public void AddSale(List<Product> saledProducts);
-        public void ReturnProductFromSale(int saleId, string name, int quantity);
+        public void ReturnProductFromSale(string name, int saleId, int quantity);
         public void DeleteSale(int saleİd);
         public IEnumerable<Sale> SearchSalesForDateInterval(DateTime first,DateTime last);
         public IEnumerable<Sale> SearchSalesForPrice(double minValue, double maxValue);
