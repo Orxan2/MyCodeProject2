@@ -33,17 +33,17 @@ namespace ConsoleProject.Services
         {
 
             if (string.IsNullOrEmpty(name))
-                throw new ArgumentNullException("name", "Məhsul adı boşdur");
+                throw new ArgumentNullException("name", "The product's name is empty");
             //if (products.Exists(i=>i.Name == name))
             //    throw new DuplicateWaitObjectException("name", "Bu məhsul artıq bazada var");
             //mehsulun artiq olmasini yoxlayir
            
             if (price <= 0)
-                throw new ArgumentOutOfRangeException("price", "Məhsulun qiyməti yanlış daxil edilib");
+                throw new ArgumentOutOfRangeException("price", "The price of the product was entered incorrectly");
             if (!categoryList.Contains(category))
-                throw new ArgumentException("Məhsulun Kateqoriyası yanlış daxil edilib");
+                throw new ArgumentException("The category of the product was entered incorrectly");
             if (quantity <= 0)
-                throw new ArgumentOutOfRangeException("price", "Məhsulun sayı 0-dan böyük olmalıdır!");
+                throw new ArgumentOutOfRangeException("price", "The product's quantity must be greater than 0!");
 
             Product product = new();
             product.Name = name;
@@ -58,11 +58,11 @@ namespace ConsoleProject.Services
        public void DeleteProduct(int productNo)
         {
             if (productNo == 0)
-               throw new ArgumentNullException("productNo", "Məhsulun nömrəsi yanlış daxil edilb");
+               throw new ArgumentNullException("productNo", "The product's ID was entered incorrectly");
 
             int index = Products.FindIndex(i=>i.ID == productNo);
             if (index==-1)
-                throw new KeyNotFoundException("Məhsul Tapılmadı");
+                throw new KeyNotFoundException("The product was not found");
 
             //Products.RemoveAt(index);
             foreach (var product in Products)
@@ -75,11 +75,11 @@ namespace ConsoleProject.Services
         public void ReturnProduct(int productNo)
         {
             if (productNo == 0)
-                throw new ArgumentNullException("productNo", "Geri Qaytarmaq istediyiniz mehsulun nomresini daxil edin");
+                throw new ArgumentNullException("productNo", "The product's ID you want to return is incorrect");
 
             int index = Products.FindIndex(i => i.ID == productNo);
             if (index == -1)
-                throw new KeyNotFoundException("Məhsul Tapılmadı");
+                throw new KeyNotFoundException("The product was not found");
 
             //Products.RemoveAt(index);
             foreach (var product in Products)
@@ -92,7 +92,7 @@ namespace ConsoleProject.Services
         public IEnumerable<Product> SearchProduct(string text)
         {
             if (string.IsNullOrEmpty(text))
-                throw new ArgumentNullException("Daxil edilən mətn boşdur!");
+                throw new ArgumentNullException("The entered text is empty!");
 
             var updatedProdects = Products.Where(i=> i.Name.Contains(text));
             //if (string.IsNullOrEmpty(text))
@@ -127,9 +127,9 @@ namespace ConsoleProject.Services
         {
             
             if (min <= 0)
-                throw new ArgumentOutOfRangeException("min", "Minimum Dəyər 0-dan böyük olmalıdır");
+                throw new ArgumentOutOfRangeException("min", "Minimum price must be greater than 0");
             if (max <= 0)
-                throw new ArgumentOutOfRangeException("max", "Maksimum Dəyər 0-dan böyük olmalıdır");
+                throw new ArgumentOutOfRangeException("max", "Maximum price must be greater than 0");
 
             var searchedProducts = Products.Where(i=>i.Price <= max && i.Price >= min);
             //if (string.IsNullOrEmpty(text))
@@ -143,30 +143,28 @@ namespace ConsoleProject.Services
         {
 
             if (!categoryList.Contains(category))
-                throw new ArgumentException("Məhsulun Kateqoriyası yanlış daxil edilib");
+                throw new ArgumentException("The category of the product was entered incorrectly");
 
             var searchedProducts = Products.Where(i => i.Category == category);          
 
             return searchedProducts;
         }
 
-
+        #region Bu Metodu Duzelt
         public void AddSale(List<Product> saledProducts)
         {
-
             Sale sale = new();
-            
-            foreach (var saledProduct in saledProducts)
+
+            foreach (Product saledProduct in saledProducts)
             {
-
                 if (saledProduct.ID<=0)
-                    throw new ArgumentNullException("Məhsulun kodu düzgün daxil edilməyib");
+                    throw new ArgumentNullException("The Product's ID was entered incorrectly");
 
 
-                var product = Products.FirstOrDefault(i=>i.ID == saledProduct.ID);
+                Product product = Products.FirstOrDefault(i=>i.ID == saledProduct.ID);
 
                 if (product == null || product.IsDeleted == true)
-                    throw new KeyNotFoundException("Məhsul Tapılmadı");
+                    throw new KeyNotFoundException("The product was not found");
 
                 if (saledProduct.Quantity > product.Quantity)
                     throw new KeyNotFoundException("Bazada Bu QƏdər Məhsul Yoxdur");
@@ -184,6 +182,7 @@ namespace ConsoleProject.Services
             Sales.Add(sale);           
           
         }
+        #endregion
 
         public void DeleteSale(int saleId)
         {

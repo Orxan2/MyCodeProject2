@@ -17,17 +17,17 @@ namespace ConsoleProject
             do
             {
                
-                Console.WriteLine("1. Məhsullar Üzərində Əməliyyat Aparmaq");
-                Console.WriteLine("2. Satışlar Üzərində Əməliyyat Aparmaq");
-                Console.WriteLine("0. Sistemdən Çıxmaq");              
+                Console.WriteLine("1. Work on Products");
+                Console.WriteLine("2. Work on Sales");
+                Console.WriteLine("0. Exit");              
 
-                Console.Write("Bir əmr seçin : ");
+                Console.Write("Please Select a Command : ");
 
                 string selectionStr = Console.ReadLine();
 
                 while (!int.TryParse(selectionStr, out selection))
                 {
-                    Console.WriteLine("Again");
+                    Console.WriteLine("Command was entered incorrectly. Please try again");
                     selectionStr = Console.ReadLine();
                 }
 
@@ -40,10 +40,10 @@ namespace ConsoleProject
                         SubMenu.ShowSaleOperations();
                         break;                  
                     case 0:
-                        Console.WriteLine("Exit");
+                        //Console.WriteLine("Exit");
                         break;
                     default:
-                        Console.WriteLine("Wrong Assignment");
+                        Console.WriteLine("You have selected the wrong command");
                         break;
                 }
             } while (selection != 0);

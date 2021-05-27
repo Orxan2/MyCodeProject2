@@ -23,11 +23,11 @@ namespace ConsoleProject.Services
         public static void DisplayProductList()
         {
 
-            var table = new ConsoleTable("Nömrəsi", "Adı", "Kateqoriyası", "Qiyməti (AZN)", "Sayı");
+            var table = new ConsoleTable("ID", "Name", "Category", "Price (AZN)", "Quantity");
             foreach (var product in operations.Products)
             { 
                 if (product.IsDeleted == false)
-                    table.AddRow(product.ID, product.Name, product.Category, product.Price, product.Quantity);
+                    table.AddRow(product.ID, product.Name, product.Category, product.Price.ToString("#.00"), product.Quantity);
 
             }
             table.Write();          
@@ -35,7 +35,7 @@ namespace ConsoleProject.Services
         public static void DisplaySaleList()
         {
 
-            var table = new ConsoleTable("Nömrəsi", "Məbləği", "Məhsul Sayı", "Tarixi");
+            var table = new ConsoleTable("ID", "Total Price", "Product Quantity", "Sell by");
             foreach (var sale in operations.Sales)
             {
                 table.AddRow(sale.ID, sale.Price, sale.SaleItems.Sum(i=>i.Quantity), sale.Date);
@@ -50,29 +50,29 @@ namespace ConsoleProject.Services
 
         public static void AddProductMenu()             
         {          
-            Console.Write("Məhsulun adını daxil edin : ");
+            Console.Write("Please enter product's name : ");
             string name = Console.ReadLine();
             if (operations.Products.Exists(i => i.Name == name))
             {
-                Console.WriteLine("Bu məhsul artıq bazada var");
+                Console.WriteLine("This product is already in the database");
                 return;
             }
             
 
-            Console.Write("Məhsulun kateqoriyasını daxil edin : ");
+            Console.Write("Please enter product's category : ");
             string category = Console.ReadLine();
 
-            Console.Write("Məhsulun sayını daxil edin : ");
+            Console.Write("Please enter product's quantity : ");
             int.TryParse(Console.ReadLine(), out int quantity);
 
-            Console.Write("Məhsulun qiymətini daxil edin : ");
+            Console.Write("Please enter product's price (x,xx): ");
             double price = double.Parse(Console.ReadLine());
 
 
             try
             {            
                 operations.AddProduct(name, price, Enum.Parse<Categories>(category), quantity);
-                Console.WriteLine("Product Inserted");
+                Console.WriteLine("Product has been Inserted");
             }
 
             catch (ArgumentNullException ex)
@@ -91,13 +91,13 @@ namespace ConsoleProject.Services
             catch (ArgumentException ex)
             {             
              //Console.ForegroundColor =  ConsoleColor.Red;
-                Console.WriteLine("Məhsulun Kateqoriyası yanlış daxil edilib");
+                Console.WriteLine("Category entered incorrectly!");
                
                 //Console.WriteLine(ex.Message);
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Gözlənilməz bir xəta baş verdi");
+                Console.WriteLine("An unexpected error occurred!");
                 //Console.WriteLine($"Message : {ex.Message} \n Type : {ex.GetType()}");
             }
 
@@ -105,13 +105,13 @@ namespace ConsoleProject.Services
       
         public static void DeleteProductMenu()
         {
-            Console.Write("Silinəcək məhsulun nömrəsini daxil edin : ");
+            Console.Write("Please enter the ID of the product you want to delete : ");
             int.TryParse(Console.ReadLine(), out int index);
             
             try
             {
                 operations.DeleteProduct(index);
-                Console.WriteLine("Məhsul silindi");
+                Console.WriteLine("Product has been deleted");
             }
             catch (ArgumentNullException ex)
             {
@@ -125,13 +125,13 @@ namespace ConsoleProject.Services
         }
         public static void ReturnProductMenu()
         {
-            Console.Write("berpa edilecek məhsulun nömrəsini daxil edin : ");
+            Console.Write("Please enter the ID of the product you want to restore : ");
             int.TryParse(Console.ReadLine(), out int index);
 
             try
             {
                 operations.ReturnProduct(index);
-                Console.WriteLine("Məhsul berpa edildi");
+                Console.WriteLine("Product has been restored");
             }
             catch (ArgumentNullException ex)
             {
@@ -145,13 +145,13 @@ namespace ConsoleProject.Services
         }
         public static void SearchProductMenu()
         {
-            Console.Write("Məhsulun adını daxil edin : ");
+            Console.Write("Please enter product's name : ");
             string search = Console.ReadLine();
 
             try
             {
                var searchedProducts = operations.SearchProduct(search);
-                var table = new ConsoleTable("Nömrəsi", "Adı", "Kateqoriyası", "Qiyməti (AZN)", "Sayı");
+                var table = new ConsoleTable("ID", "Name", "Category", "Price (AZN)", "Quantity");
                 foreach (var searchedProduct in searchedProducts)
                 {
                     if (searchedProduct.IsDeleted == false)
@@ -168,24 +168,24 @@ namespace ConsoleProject.Services
 
         public static void EditProductMenu()
         {
-            Console.Write("Düzəliş ediləcək məhsulun nömrəsini daxil edin : ");
+            Console.Write("Please enter the product ID you want to edit : ");
             int.TryParse(Console.ReadLine(), out int index);
             if (!operations.Products.Exists(i => i.ID == index))
             {
-                Console.WriteLine("Nömrə Yanlışdır");
+                Console.WriteLine("The ID was entered incorrectly");
                 return;
             }
             int selection = 0;
             Product data = new();
             do
             {
-                Console.WriteLine("1.Ad 2.Kateqoriya 3.Qiymət 4.Say 0.Artıq Dəyişmək İstəmirəm");
-                Console.Write("Nəyi Dəyişmək istəyirsiniz? : ");
+                Console.WriteLine("1.Name 2.Category 3.Price(x,xx) 4.Quantity 0.I don't want to change anymore");
+                Console.Write("What do you want to change? : ");
 
                 string selectionStr = Console.ReadLine();
                 while (!int.TryParse(selectionStr, out selection))
                 {
-                    Console.WriteLine("Again");
+                    Console.WriteLine("The choice is incorrect");
                     selectionStr = Console.ReadLine();
                 }
 
@@ -193,63 +193,62 @@ namespace ConsoleProject.Services
                 {
                     case 1:
                         {
-                            Console.Write("Məhsulun adını : ");
+                            Console.Write("Product's name : ");
                             string name = Console.ReadLine();
                             data.Name = name;
                             break;
                         }
                     case 2:
                         {
-                            Console.Write("Məhsulun kateqoriyası : ");
+                            Console.Write("Product's category : ");
 
                             if (Enum.TryParse<Categories>(Console.ReadLine(), false, out Categories category))
                                 data.Category = category;                            
                             else
-                                Console.WriteLine("Kateqoriya Yanlış daxil edildi");
-
+                                Console.WriteLine("The category was entered incorrectly");
                             break;
                         }
                     case 3:
                         {
-                            Console.Write("Məhsulun qiyməti : ");
+                            Console.Write("Product's price (x,xx) : ");
                             if (double.TryParse(Console.ReadLine(), out double price))
                                 data.Price = price;
                             else
-                                Console.WriteLine("Qiymət yanlış daxil edildi");
+                                Console.WriteLine("The price was entered incorrectly");
                             break;
                         }
                     case 4:
                         {
-                            Console.Write("Məhsulun sayı : ");
+                            Console.Write("Product's quantity : ");
                             if (int.TryParse(Console.ReadLine(), out int quantity))
                                 data.Quantity = quantity;
                             else
-                                Console.WriteLine("Say yanlış daxil edildi");
+                                Console.WriteLine("The quantity was entered incorrectly");
                             break;
                         }                   
                     default:
-                        Console.WriteLine("Yanlış düyməyə basdınız");
+                        Console.WriteLine("You pressed the wrong button");
                         break;
                 }
             } while (selection != 0);
 
             operations.EditProduct(index, data);
-            Console.WriteLine("Məhsul yeniləndi");
+            Console.WriteLine("The product has been updated");
 
         }
 
         public static void SearchProductMenuForPrice()
         {
-            Console.Write("Minimum dəyər daxil edin : ");
+            Console.Write("Please enter a minimum price (x,xx) : ");
             double.TryParse(Console.ReadLine(), out double minimum);
 
-            Console.Write("Maksimum dəyər daxil edin : ");
+            Console.Write("Please enter a maximum price (x,xx) : ");
             double.TryParse(Console.ReadLine(), out double maximum);
 
             try
             {
                 var searchedProducts = operations.SearchProductForPrice(minimum,maximum);
-                var table = new ConsoleTable("Nömrəsi", "Adı", "Kateqoriyası", "Qiyməti (AZN)", "Sayı");
+                var table = new ConsoleTable("ID", "Name", "Category", "Price (AZN)", "Quantity");
                 foreach (var searchedProduct in searchedProducts)
                 {
                     if (searchedProduct.IsDeleted == false)
@@ -266,59 +265,61 @@ namespace ConsoleProject.Services
 
         public static void SearchProductMenuForCategory()
         {
-            Console.Write("Kateqoriya daxil edin : ");
+            Console.Write("Please enter category for search : ");
             string category = Console.ReadLine();                     
 
             try
             {
                 var searchedProducts = operations.SearchProductForCategory(Enum.Parse<Categories>(category));
-                var table = new ConsoleTable("Nömrəsi", "Adı", "Kateqoriyası", "Qiyməti (AZN)", "Sayı");
+                var table = new ConsoleTable("ID", "Name", "Category", "Price (AZN)", "Quantity");
                 foreach (var searchedProduct in searchedProducts)
                 {
                     if (searchedProduct.IsDeleted == false)
                         table.AddRow(searchedProduct.ID, searchedProduct.Name, searchedProduct.Category, searchedProduct.Price, searchedProduct.Quantity);
                 }
                 table.Write();
-                //Console.WriteLine();
             }
-            catch (ArgumentException ex)
+            catch (ArgumentException)
             {
-                //Console.WriteLine(ex.Message);
-                Console.WriteLine("Məhsulun Kateqoriyası yanlış daxil edilib");
+                Console.WriteLine("The category was entered incorrectly");
             }
         }
 
+
+        #region burani duzelt 
 
         public static void AddSaleMenu()
         {
             List<Product> saledProducts = new();
             string selection = string.Empty;
-            
+
             do
             {
-                Product saledProduct = new();               
+                Product saledProduct = new();
+                Console.WriteLine("mehsulun nomresi {0}", saledProduct.ID);
 
-                Console.Write("Satılan Məhsulun kodunu daxil edin : ");
+
+                Console.Write("Please enter the product ID you want to sell : ");
                 int.TryParse(Console.ReadLine(), out int code);
 
-                Console.Write("Məhsulun sayını daxil edin : ");
+                Console.Write("Please enter product number : ");
                 int.TryParse(Console.ReadLine(), out int quantity);
 
                 saledProduct.ID = code;
                 saledProduct.Quantity = quantity;
                 saledProducts.Add(saledProduct);
 
-                Console.WriteLine("Yeni Məhsul Əlavə etmək üçün 1-ə,əks təqdirdə başqa hərhansısa yere toxunun.");
+                Console.WriteLine("Tap 1 to add a new product, otherwise anywhere else : ");
                 selection = Console.ReadLine();
 
-            } while (selection == "1");           
+            } while (selection == "1");
 
-          
+
             try
             {
                 operations.AddSale(saledProducts);
-                Console.WriteLine("Sale Inserted");
-            }                     
+                Console.WriteLine("Sale has been Inserted");
+            }
             catch (ArgumentNullException ex)
             {
                 Console.WriteLine(ex.Message);
@@ -327,23 +328,24 @@ namespace ConsoleProject.Services
             catch (KeyNotFoundException ex)
             {
                 Console.WriteLine(ex.Message);
-            }         
+            }
             catch (Exception)
             {
-                Console.WriteLine("Gözlənilməz bir xəta baş verdi");
+                Console.WriteLine("An unexpected error occurred!");
                 //Console.WriteLine($"Message : {ex.Message} \n Type : {ex.GetType()}");
             }
         }
+        #endregion
 
         public static void DeleteSaleMenu()
         {
-            Console.WriteLine("Silinəcək Satışın kodunu daxil edin : ");
+            Console.WriteLine("Please enter the ID of the sale you want to delete : ");
             //string saleIdStr = Console.ReadLine();
             int.TryParse(Console.ReadLine(), out int saleId);
             try
             {
                 operations.DeleteSale(saleId);
-                Console.WriteLine("Satış silindi");
+                Console.WriteLine("Sale has been deleted");
             }
             catch (ArgumentNullException ex)
             {
@@ -355,22 +357,22 @@ namespace ConsoleProject.Services
             }
             catch (Exception)
             {
-                Console.WriteLine("Gözlənilməz bir xəta baş verdi");
+                Console.WriteLine("An unexpected error occurred!");
             }
         }
 
         public static void SearchSalesForPriceMenu()
         {
-            Console.Write("Minimum dəyər daxil edin : ");
+            Console.Write("Please enter a minimum price for search (x,xx) : ");
             double.TryParse(Console.ReadLine(), out double minimum);
 
-            Console.Write("Maksimum dəyər daxil edin : ");
+            Console.Write("Please enter a maximum price for search (x,xx) : ");
             double.TryParse(Console.ReadLine(), out double maximum);
 
             try
             {
                 var searchedSales = operations.SearchSalesForPrice(minimum, maximum);
-                var searchTable = new ConsoleTable("Nömrəsi", "Məbləği", "Məhsul Sayı", "Tarixi");
+                var searchTable = new ConsoleTable("ID", "Total Price", "Product Quantity", "Sell by");
                 foreach (var searchedSale in searchedSales)
                 {
                     searchTable.AddRow(searchedSale.ID, searchedSale.Price, searchedSale.SaleItems.Count(), searchedSale.Date);
@@ -385,16 +387,16 @@ namespace ConsoleProject.Services
 
        public static void SearchSalesForDateInterval()
         {
-            Console.Write("Başlanğıc tarixi daxil edin : ");
+            Console.Write("Please enter a start date for search (mm/dd/yyyy) : ");
             DateTime.TryParse(Console.ReadLine(), out DateTime minimum);
 
-            Console.Write("Bitiş tarixi daxil edin : ");
+            Console.Write("Please enter a last date for search (mm/dd/yyyy) : ");
             DateTime.TryParse(Console.ReadLine(), out DateTime maximum);
 
             try
             {
                var searchedSales = operations.SearchSalesForDateInterval(minimum,maximum);
-                var searchTable = new ConsoleTable("Nömrəsi", "Məbləği", "Məhsul Sayı", "Tarixi");
+                var searchTable = new ConsoleTable("ID", "Total Price", "Product Quantity", "Sell by");
                 foreach (var searchedSale in searchedSales)
                 {
                     searchTable.AddRow(searchedSale.ID, searchedSale.Price, searchedSale.SaleItems.Count(), searchedSale.Date);
@@ -419,17 +421,17 @@ namespace ConsoleProject.Services
 
         public static void DisplaySaleİtemsMenu()
         {
-            Console.WriteLine("Satışın kodunu daxil edin : ");
+            Console.WriteLine("Please enter sale's ID : ");
             int.TryParse(Console.ReadLine(),out int saleId);
 
             try
             {
                 Sale searchedSale = operations.DisplaySaleİtems(saleId);
-                var saleTable = new ConsoleTable("Nömrəsi", "Məbləği", "Məhsul Sayı", "Tarixi");
+                var saleTable = new ConsoleTable("ID", "Total Price", "Product Quantity", "Sell by");
                 saleTable.AddRow(searchedSale.ID, searchedSale.Price, searchedSale.SaleItems.Count(), searchedSale.Date);
                 saleTable.Write();
                 
-                var saleItemsTable = new ConsoleTable("Nömrəsi", "Məhsul Adı", "Məhsul Sayı");
+                var saleItemsTable = new ConsoleTable("ID", "Product Name", "Product Quantity");
                 foreach (var SaleItem in searchedSale.SaleItems)
                 {
                     saleItemsTable.AddRow(SaleItem.ID, SaleItem.Product.Name, SaleItem.Quantity);
@@ -442,19 +444,19 @@ namespace ConsoleProject.Services
             }
             catch (Exception)
             {
-                Console.WriteLine("Gözlənilməz bir xəta baş verdi");
+                Console.WriteLine("An unexpected error occurred!");
             }
         }
 
         public static void SearchSalesForDate()
         {
-            Console.Write("Satış tarixi daxil edin : ");
+            Console.Write("Please enter a date for search (mm/dd/yyyy) : ");
             DateTime.TryParse(Console.ReadLine(), out DateTime minimum);           
 
             try
             {
                 var searchedSales = operations.SearchSalesForDate(minimum);
-                var searchTable = new ConsoleTable("Nömrəsi", "Məbləği", "Məhsul Sayı", "Tarixi");
+                var searchTable = new ConsoleTable("ID", "Total Price", "Product Quantity", "Sell by");
                 foreach (var searchedSale in searchedSales)
                 {
                     searchTable.AddRow(searchedSale.ID, searchedSale.Price, searchedSale.SaleItems.Count(), searchedSale.Date);
@@ -478,19 +480,19 @@ namespace ConsoleProject.Services
 
         public static void ReturnProductFromSaleMenu()
         {
-            Console.WriteLine("Hans; mehsulu geri qaytarirsiniz : ");
+            Console.WriteLine("Which product do you want to return:");
             string name = Console.ReadLine();
 
-            Console.WriteLine("Hansi satisdan silineceek : ");
+            Console.WriteLine("Which will be deleted from sale? : ");
             int.TryParse(Console.ReadLine(),out int saleId);
 
-            Console.WriteLine("Say : ");
+            Console.WriteLine("how many do you want to return : ");
             int.TryParse(Console.ReadLine(), out int quantity);
 
             try
             {
                 operations.ReturnProductFromSale(name,saleId, quantity);
-                Console.WriteLine("mEHSUL GERI QAYTARILDI");
+                Console.WriteLine("the product has been returned");
             }
             catch (ArgumentNullException ex)
             {
@@ -506,7 +508,7 @@ namespace ConsoleProject.Services
             }
             catch (Exception)
             {
-                Console.WriteLine("gozlenilmez xeta oldu");
+                Console.WriteLine("An unexpected error occurred!");
             }
            
         }

@@ -21,8 +21,7 @@ namespace ConsoleProject.Data.Entities
         {
              _count++;
             this.ID = _count;
-            IsDeleted = false;
-          
+            IsDeleted = false;         
         }
     }
 }
