@@ -60,41 +60,31 @@ namespace ConsoleProject.Services
             if (productNo == 0)
                throw new ArgumentNullException("productNo", "The product's ID was entered incorrectly");
 
-            int index = Products.FindIndex(i=>i.ID == productNo);
-            if (index==-1)
-                throw new KeyNotFoundException("The product was not found");
+            Product product = Products.FirstOrDefault(i=>i.ID == productNo);
+            if (product == null || product.IsDeleted==true)
+                throw new KeyNotFoundException("The product was not found or has already been deleted");
 
-            //Products.RemoveAt(index);
-            foreach (var product in Products)
-            {
-                if (product.ID == productNo)
-                    product.IsDeleted = true;
-            }
-
+            product.IsDeleted = true;           
         }
         public void ReturnProduct(int productNo)
         {
             if (productNo == 0)
-                throw new ArgumentNullException("productNo", "The product's ID you want to return is incorrect");
+                throw new ArgumentNullException("productNo", "The product's ID was entered incorrectly");
 
-            int index = Products.FindIndex(i => i.ID == productNo);
-            if (index == -1)
-                throw new KeyNotFoundException("The product was not found");
+            Product product = Products.FirstOrDefault(i => i.ID == productNo);
 
-            //Products.RemoveAt(index);
-            foreach (var product in Products)
-            {
-                if (product.ID == productNo)
-                    product.IsDeleted = false;
-            }
+            if (product == null || product.IsDeleted == false)
+                throw new KeyNotFoundException("The product was not found or hasn't been deleted");
 
+            product.IsDeleted = false;
         }
+
         public IEnumerable<Product> SearchProduct(string text)
         {
             if (string.IsNullOrEmpty(text))
                 throw new ArgumentNullException("The entered text is empty!");
 
-            var updatedProdects = Products.Where(i=> i.Name.Contains(text));
+            var updatedProdects = Products.Where(i=> i.Name.Contains(text) && i.IsDeleted == false);
             //if (string.IsNullOrEmpty(text))
             //    throw new ArgumentNullException("");
 
@@ -105,8 +95,8 @@ namespace ConsoleProject.Services
         public void EditProduct(int productNo, Product data)
         {
             foreach (var product in Products)
-            {
-                if (product.ID == productNo)
+            {               
+                if (product.ID == productNo && product.IsDeleted == false)
                 {                    
                      if(!string.IsNullOrEmpty(data.Name))
                             product.Name = data.Name;
@@ -131,7 +121,7 @@ namespace ConsoleProject.Services
             if (max <= 0)
                 throw new ArgumentOutOfRangeException("max", "Maximum price must be greater than 0");
 
-            var searchedProducts = Products.Where(i=>i.Price <= max && i.Price >= min);
+            var searchedProducts = Products.Where(i=>i.Price <= max && i.Price >= min && i.IsDeleted == false);
             //if (string.IsNullOrEmpty(text))
             //    throw new ArgumentNullException("");
 
@@ -145,7 +135,7 @@ namespace ConsoleProject.Services
             if (!categoryList.Contains(category))
                 throw new ArgumentException("The category of the product was entered incorrectly");
 
-            var searchedProducts = Products.Where(i => i.Category == category);          
+            var searchedProducts = Products.Where(i => i.Category == category && i.IsDeleted == false);          
 
             return searchedProducts;
         }
@@ -161,9 +151,9 @@ namespace ConsoleProject.Services
                     throw new ArgumentNullException("The Product's ID was entered incorrectly");
 
 
-                Product product = Products.FirstOrDefault(i=>i.ID == saledProduct.ID);
+                Product product = Products.FirstOrDefault(i=>i.ID == saledProduct.ID && i.IsDeleted == false);
 
-                if (product == null || product.IsDeleted == true)
+                if (product == null)
                     throw new KeyNotFoundException("The product was not found");
 
                 if (saledProduct.Quantity > product.Quantity)
@@ -171,6 +161,7 @@ namespace ConsoleProject.Services
                 SaleItem saleItem = new();
                 saleItem.Product = product;
                 saleItem.Quantity = saledProduct.Quantity;
+
                 sale.Price += saleItem.Product.Price * saleItem.Quantity;               
                 //Products.FirstOrDefault(i => i.ID == saledProduct.ID).Quantity -= saledProduct.Quantity;
                 sale.SaleItems.Add(saleItem);
@@ -189,13 +180,10 @@ namespace ConsoleProject.Services
             if (saleId == 0)
                 throw new ArgumentNullException("saleId", "Satisin kodu dogru daxil edilmeyib");
 
-            if (Sales.Exists(i => i.ID != saleId))
-                throw new KeyNotFoundException("daxil etdiyiniz koda uygun satis yoxdur");
+            if (Sales.Exists(i => i.ID != saleId || i.IsDeleted == true))
+                throw new KeyNotFoundException("daxil etdiyiniz koda uygun satis yoxdur ya da artiq silinib");
 
             Sale sale = Sales.FirstOrDefault(i=>i.ID == saleId);
-
-            //if (sale == null)
-            //    throw new KeyNotFoundException("Satış Tapılmadı");
 
             foreach (var saleItem in sale.SaleItems)
             {
@@ -204,13 +192,35 @@ namespace ConsoleProject.Services
                 if (product.IsDeleted == true)
                     product.IsDeleted = false;
 
-                product.Quantity += saleItem.Quantity;// silinmeyibse mehsul
+                product.Quantity += saleItem.Quantity;
             }
 
-
-            Sales.Remove(sale);
+            sale.IsDeleted = true;          
+            
         }
 
+        public void RestoreSale(int saleId)
+        {
+            if (saleId == 0)
+                throw new ArgumentNullException("saleId", "Satisin kodu dogru daxil edilmeyib");
+
+            if (Sales.Exists(i => i.ID != saleId || i.IsDeleted == false))
+                throw new KeyNotFoundException("daxil etdiyiniz koda uygun satis yoxdur yada silinmeyib");
+
+            Sale sale = Sales.FirstOrDefault(i => i.ID == saleId);
+
+            foreach (var saleItem in sale.SaleItems)
+            {
+                Product product = (Products.FirstOrDefault(i => i.ID == saleItem.Product.ID));
+
+                if (product.IsDeleted == true)
+                    product.IsDeleted = false;
+
+                product.Quantity -= saleItem.Quantity; 
+            }
+
+            sale.IsDeleted = false;          
+        }
         public IEnumerable<Sale> SearchSalesForPrice(double minValue,double maxValue)
         {
             if (minValue <= 0)
@@ -218,7 +228,7 @@ namespace ConsoleProject.Services
             if (maxValue <= 0)
                 throw new ArgumentOutOfRangeException("maxValue", "Maksimum Qiymət 0-dan böyük olmalıdır");
 
-            var searchedSales = Sales.Where(i=>i.Price<=maxValue && i.Price>=minValue);
+            var searchedSales = Sales.Where(i=>i.Price<=maxValue && i.Price>=minValue && i.IsDeleted==false);
 
             return searchedSales;
 
@@ -232,7 +242,7 @@ namespace ConsoleProject.Services
             if (lastDate.Year == 1)
                 throw new ArgumentNullException("lastDate", "Bitiş tarixi yanlış daxil edilib");
             
-            var searhedSales = Sales.Where(i => i.Date >= startDate && i.Date <= lastDate);
+            var searhedSales = Sales.Where(i => i.Date >= startDate && i.Date <= lastDate && i.IsDeleted == false);
             if (searhedSales.Count() == 0)
                 throw new KeyNotFoundException("Bu Tarixlərdə Satış Olmayıb");
 
@@ -244,7 +254,7 @@ namespace ConsoleProject.Services
             if (saleId == 0)
                 throw new ArgumentNullException("saleId","Satışın kodu yanlış daxil edilib");
 
-            Sale sale = Sales.FirstOrDefault(i => i.ID == saleId);
+            Sale sale = Sales.FirstOrDefault(i => i.ID == saleId && i.IsDeleted == false);
 
             if (sale == null)
                 throw new ArgumentNullException("sale", "Axtarılan satış tapılmadı");
@@ -259,7 +269,7 @@ namespace ConsoleProject.Services
             if (date.Year == 1)
                 throw new ArgumentNullException("date", "Tarix yanlış daxil edilib");
 
-            var searhedSales = Sales.Where(i => i.Date.Day == date.Day);
+            var searhedSales = Sales.Where(i => i.Date.Day == date.Day && i.IsDeleted == false);
             if (searhedSales.Count() == 0)
                 throw new KeyNotFoundException("Bu Tarixdə Satış Olmayıb");
 
@@ -272,11 +282,14 @@ namespace ConsoleProject.Services
             if (saleId == 0)
                 throw new ArgumentNullException("saleId", "Satisin kodu dogru daxil edilmeyib");
 
-            if (Sales.Exists(i => i.ID != saleId))
-                throw new KeyNotFoundException("daxil etdiyiniz koda uygun satis yoxdur");
+            if (Sales.Exists(i => i.ID != saleId || i.IsDeleted == true))
+                throw new KeyNotFoundException("daxil etdiyiniz koda uygun satis yoxdur ya da silinib");
 
             Sale sale = Sales.FirstOrDefault(i => i.ID == saleId);
-          
+
+            if (sale.IsDeleted == true)
+                sale.IsDeleted = false;
+
             if (string.IsNullOrEmpty(name)) 
                 throw new ArgumentNullException("name", "Məhsulun adı doğru daxil edilməyib");
 

@@ -14,11 +14,13 @@ namespace ConsoleProject.Data.Entities
         public double Price { get; set; }
         public List<SaleItem> SaleItems { get; set; }
         public DateTime Date { get; set; }
+        public bool IsDeleted { get; set; }
         public Sale()
         {
             _count++;
             this.ID = _count;
             Date = DateTime.Now;
+            IsDeleted = false;
             SaleItems = new();
         }
     }

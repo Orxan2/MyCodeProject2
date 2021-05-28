@@ -27,7 +27,7 @@ namespace ConsoleProject.Services
             foreach (var product in operations.Products)
             { 
                 if (product.IsDeleted == false)
-                    table.AddRow(product.ID, product.Name, product.Category, product.Price.ToString("#.00"), product.Quantity);
+                    table.AddRow(product.ID, product.Name, product.Category, product.Price.ToString("0.00"), product.Quantity);
 
             }
             table.Write();          
@@ -38,7 +38,8 @@ namespace ConsoleProject.Services
             var table = new ConsoleTable("ID", "Total Price", "Product Quantity", "Sell by");
             foreach (var sale in operations.Sales)
             {
-                table.AddRow(sale.ID, sale.Price, sale.SaleItems.Sum(i=>i.Quantity), sale.Date);
+                if (sale.IsDeleted == false)
+                    table.AddRow(sale.ID, sale.Price.ToString("0.00"), sale.SaleItems.Sum(i=>i.Quantity), sale.Date);
             }
             table.Write();
             //Console.WriteLine();
@@ -65,7 +66,7 @@ namespace ConsoleProject.Services
             Console.Write("Please enter product's quantity : ");
             int.TryParse(Console.ReadLine(), out int quantity);
 
-            Console.Write("Please enter product's price (x,xx): ");
+            Console.Write("Please enter product's price (x.xx): ");
             double price = double.Parse(Console.ReadLine());
 
 
@@ -155,7 +156,7 @@ namespace ConsoleProject.Services
                 foreach (var searchedProduct in searchedProducts)
                 {
                     if (searchedProduct.IsDeleted == false)
-                        table.AddRow(searchedProduct.ID, searchedProduct.Name, searchedProduct.Category, searchedProduct.Price, searchedProduct.Quantity);
+                        table.AddRow(searchedProduct.ID, searchedProduct.Name, searchedProduct.Category, searchedProduct.Price.ToString("0.00"), searchedProduct.Quantity);
                 }
                 table.Write();
                 //Console.WriteLine();
@@ -179,7 +180,7 @@ namespace ConsoleProject.Services
             Product data = new();
             do
             {
-                Console.WriteLine("1.Name 2.Category 3.Price(x,xx) 4.Quantity 0.I don't want to change anymore");
+                Console.WriteLine("1.Name 2.Category 3.Price(x.xx) 4.Quantity 0.I don't want to change anymore");
                 Console.Write("What do you want to change? : ");
 
                 string selectionStr = Console.ReadLine();
@@ -210,7 +211,7 @@ namespace ConsoleProject.Services
                         }
                     case 3:
                         {
-                            Console.Write("Product's price (x,xx) : ");
+                            Console.Write("Product's price (x.xx) : ");
                             if (double.TryParse(Console.ReadLine(), out double price))
                                 data.Price = price;
                             else
@@ -239,10 +240,10 @@ namespace ConsoleProject.Services
 
         public static void SearchProductMenuForPrice()
         {
-            Console.Write("Please enter a minimum price (x,xx) : ");
+            Console.Write("Please enter a minimum price (x.xx) : ");
             double.TryParse(Console.ReadLine(), out double minimum);
 
-            Console.Write("Please enter a maximum price (x,xx) : ");
+            Console.Write("Please enter a maximum price (x.xx) : ");
             double.TryParse(Console.ReadLine(), out double maximum);
 
             try
@@ -252,7 +253,7 @@ namespace ConsoleProject.Services
                 foreach (var searchedProduct in searchedProducts)
                 {
                     if (searchedProduct.IsDeleted == false)
-                        table.AddRow(searchedProduct.ID, searchedProduct.Name, searchedProduct.Category, searchedProduct.Price, searchedProduct.Quantity);
+                        table.AddRow(searchedProduct.ID, searchedProduct.Name, searchedProduct.Category, searchedProduct.Price.ToString("0.00"), searchedProduct.Quantity);
                 }
                 table.Write();
                 //Console.WriteLine();
@@ -275,7 +276,7 @@ namespace ConsoleProject.Services
                 foreach (var searchedProduct in searchedProducts)
                 {
                     if (searchedProduct.IsDeleted == false)
-                        table.AddRow(searchedProduct.ID, searchedProduct.Name, searchedProduct.Category, searchedProduct.Price, searchedProduct.Quantity);
+                        table.AddRow(searchedProduct.ID, searchedProduct.Name, searchedProduct.Category, searchedProduct.Price.ToString("0.00"), searchedProduct.Quantity);
                 }
                 table.Write();
             }
@@ -296,8 +297,7 @@ namespace ConsoleProject.Services
             do
             {
                 Product saledProduct = new();
-                Console.WriteLine("mehsulun nomresi {0}", saledProduct.ID);
-
+               
 
                 Console.Write("Please enter the product ID you want to sell : ");
                 int.TryParse(Console.ReadLine(), out int code);
@@ -340,7 +340,6 @@ namespace ConsoleProject.Services
         public static void DeleteSaleMenu()
         {
             Console.WriteLine("Please enter the ID of the sale you want to delete : ");
-            //string saleIdStr = Console.ReadLine();
             int.TryParse(Console.ReadLine(), out int saleId);
             try
             {
@@ -360,7 +359,28 @@ namespace ConsoleProject.Services
                 Console.WriteLine("An unexpected error occurred!");
             }
         }
-
+        public static void RestoreSaleMenu()
+        {
+            Console.WriteLine("Please enter the ID of the sale you want to restore : ");
+            int.TryParse(Console.ReadLine(), out int saleId);
+            try
+            {
+                operations.RestoreSale(saleId);
+                Console.WriteLine("Sale has been restored");
+            }
+            catch (ArgumentNullException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("An unexpected error occurred!");
+            }
+        }
         public static void SearchSalesForPriceMenu()
         {
             Console.Write("Please enter a minimum price for search (x,xx) : ");
@@ -375,7 +395,7 @@ namespace ConsoleProject.Services
                 var searchTable = new ConsoleTable("ID", "Total Price", "Product Quantity", "Sell by");
                 foreach (var searchedSale in searchedSales)
                 {
-                    searchTable.AddRow(searchedSale.ID, searchedSale.Price, searchedSale.SaleItems.Count(), searchedSale.Date);
+                    searchTable.AddRow(searchedSale.ID, searchedSale.Price.ToString("0.00"), searchedSale.SaleItems.Count(), searchedSale.Date);
                 }
                 searchTable.Write();
             }
@@ -399,7 +419,7 @@ namespace ConsoleProject.Services
                 var searchTable = new ConsoleTable("ID", "Total Price", "Product Quantity", "Sell by");
                 foreach (var searchedSale in searchedSales)
                 {
-                    searchTable.AddRow(searchedSale.ID, searchedSale.Price, searchedSale.SaleItems.Count(), searchedSale.Date);
+                    searchTable.AddRow(searchedSale.ID, searchedSale.Price.ToString("0.00"), searchedSale.SaleItems.Count(), searchedSale.Date);
                 }
                 searchTable.Write();
             }
@@ -428,7 +448,7 @@ namespace ConsoleProject.Services
             {
                 Sale searchedSale = operations.DisplaySaleİtems(saleId);
                 var saleTable = new ConsoleTable("ID", "Total Price", "Product Quantity", "Sell by");
-                saleTable.AddRow(searchedSale.ID, searchedSale.Price, searchedSale.SaleItems.Count(), searchedSale.Date);
+                saleTable.AddRow(searchedSale.ID, searchedSale.Price.ToString("0.00"), searchedSale.SaleItems.Count(), searchedSale.Date);
                 saleTable.Write();
                 
                 var saleItemsTable = new ConsoleTable("ID", "Product Name", "Product Quantity");
@@ -459,7 +479,7 @@ namespace ConsoleProject.Services
                 var searchTable = new ConsoleTable("ID", "Total Price", "Product Quantity", "Sell by");
                 foreach (var searchedSale in searchedSales)
                 {
-                    searchTable.AddRow(searchedSale.ID, searchedSale.Price, searchedSale.SaleItems.Count(), searchedSale.Date);
+                    searchTable.AddRow(searchedSale.ID, searchedSale.Price.ToString("0.00"), searchedSale.SaleItems.Count(), searchedSale.Date);
                 }
                 searchTable.Write();
             }

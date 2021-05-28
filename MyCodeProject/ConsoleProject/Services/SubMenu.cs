@@ -84,11 +84,12 @@ namespace ConsoleProject.Services
                 Console.WriteLine("1. Add Sale");
                 Console.WriteLine("2. Return Product From Sale");
                 Console.WriteLine("3. Delete Sale");
-                Console.WriteLine("4. Display All Sales");
-                Console.WriteLine("5. Search Sales For Date Interval");
-                Console.WriteLine("6. Search Sales For Price");                
-                Console.WriteLine("7. Search Sales For Date");
-                Console.WriteLine("8. Search Sale and Sale Items For ID");
+                Console.WriteLine("4. Restore Sale");
+                Console.WriteLine("5. Display All Sales");
+                Console.WriteLine("6. Search Sales For Date Interval");
+                Console.WriteLine("7. Search Sales For Price");                
+                Console.WriteLine("8. Search Sales For Date");
+                Console.WriteLine("9. Search Sale and Sale Items For ID");
                 Console.WriteLine("0. Go Back");
 
                 Console.Write("Please Select a Command : ");
@@ -113,18 +114,21 @@ namespace ConsoleProject.Services
                         MenuServices.DeleteSaleMenu();
                         break;
                     case 4:
-                        MenuServices.DisplaySaleList();
+                        MenuServices.RestoreSaleMenu();
                         break;
                     case 5:
-                        MenuServices.SearchSalesForDateInterval();
+                        MenuServices.DisplaySaleList();
                         break;
                     case 6:
-                        MenuServices.SearchSalesForPriceMenu();
+                        MenuServices.SearchSalesForDateInterval();
                         break;
                     case 7:
-                        MenuServices.SearchSalesForDate();
+                        MenuServices.SearchSalesForPriceMenu();
                         break;
                     case 8:
+                        MenuServices.SearchSalesForDate();
+                        break;
+                    case 9:
                         MenuServices.DisplaySaleİtemsMenu();
                         break;
 
