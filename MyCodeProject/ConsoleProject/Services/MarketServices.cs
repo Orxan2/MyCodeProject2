@@ -35,16 +35,16 @@ namespace ConsoleProject.Services
                 throw new DuplicateWaitObjectException("name", "This product is already in the database");
 
             if (price <= 0)
-                throw new OverflowException("The price of the product was entered incorrectly");
+                throw new FormatException("The price of the product was entered incorrectly");
 
             if (string.IsNullOrEmpty(category))
                 throw new ArgumentNullException("category", "The product's name is empty");
 
             if (!categoryList.Exists(i => i.ToString() == category))
-                throw new OverflowException("The product's category was entered incorrectly");
+                throw new FormatException("The product's category was entered incorrectly");
 
             if (quantity <= 0)
-                throw new OverflowException("The product's quantity must be number and greater than 0!");
+                throw new FormatException("The product's quantity must be number and greater than 0!");
 
             Product product = new();
             product.Name = name;
@@ -61,7 +61,7 @@ namespace ConsoleProject.Services
             foreach (KeyValuePair<int, int> data in datas)
             {
                 if (data.Key <= 0)
-                    throw new OverflowException("The Product's ID was entered incorrectly");
+                    throw new FormatException("The Product's ID was entered incorrectly");
 
                 Product product = Products.FirstOrDefault(i => i.ID == data.Key && i.IsDeleted == false);
 
@@ -91,7 +91,7 @@ namespace ConsoleProject.Services
         public void DeleteProduct(int productNo)
         {
             if (productNo == 0)
-                throw new OverflowException("The product's ID was entered incorrectly");
+                throw new FormatException("The product's ID was entered incorrectly");
 
             Product product = Products.FirstOrDefault(i => i.ID == productNo);
             if (product == null || product.IsDeleted == true)
@@ -102,7 +102,7 @@ namespace ConsoleProject.Services
         public void DeleteSale(int saleId)
         {
             if (saleId == 0)
-                throw new OverflowException("The sale's ID is not entered correctly");
+                throw new FormatException("The sale's ID is not entered correctly");
 
             if (Sales.Exists(i => i.ID != saleId || i.IsDeleted == true))
                 throw new KeyNotFoundException("The ID you entered does not match the sale or sale has already been deleted");
@@ -128,7 +128,7 @@ namespace ConsoleProject.Services
         public void RestoreProduct(int productNo)
         {
             if (productNo == 0)
-                throw new OverflowException("The product's ID was entered incorrectly");
+                throw new FormatException("The product's ID was entered incorrectly");
 
             Product product = Products.FirstOrDefault(i => i.ID == productNo);
 
@@ -157,7 +157,7 @@ namespace ConsoleProject.Services
         public void RestoreSale(int saleId)
         {
             if (saleId == 0)
-                throw new OverflowException("The sale's ID is not entered correctly");
+                throw new FormatException("The sale's ID is not entered correctly");
 
             if (Sales.Exists(i => i.ID != saleId || i.IsDeleted == false))
                 throw new KeyNotFoundException("The ID you entered does not match the sale or sale hasn't been deleted");
@@ -182,7 +182,7 @@ namespace ConsoleProject.Services
                 throw new ArgumentNullException("name", "The product's name was entered incorrectly");
 
             if (saleId == 0)
-                throw new OverflowException("The sale's ID was entered incorrectly");
+                throw new FormatException("The sale's ID was entered incorrectly");
 
             if (!Sales.Exists(i => i.ID == saleId && i.IsDeleted == false))
                 throw new KeyNotFoundException("The ID you entered does not match the sales or sale has already been deleted");
@@ -193,7 +193,7 @@ namespace ConsoleProject.Services
                 throw new KeyNotFoundException("There is no such product among the sold products");
 
             if (quantity == 0)
-                throw new OverflowException("Qebzdeki satilmis Məhsulun sayı doğru daxil edilməyib");
+                throw new FormatException("Qebzdeki satilmis Məhsulun sayı doğru daxil edilməyib");
 
             if (quantity > sale.SaleItems.Where(i => i.Product.Name == name).Sum(i => i.Quantity))
                 throw new ArgumentOutOfRangeException("quantity", "There are not so many products in the sale list");
@@ -241,7 +241,7 @@ namespace ConsoleProject.Services
         public IEnumerable<Product> SearchProductForCategory(string category)
         {
             if (!categoryList.Exists(i => i.ToString() == category))
-                throw new OverflowException("The category of the product was entered incorrectly");
+                throw new FormatException("The category of the product was entered incorrectly");
 
             var searchedProducts = Products.Where(i => i.Category.ToString() == category && i.IsDeleted == false);
 
@@ -263,10 +263,10 @@ namespace ConsoleProject.Services
         public IEnumerable<Sale> SearchSalesForDateInterval(DateTime startDate, DateTime lastDate)
         {
             if (startDate.Year == 1)
-                throw new OverflowException("The start date was entered incorrectly");
+                throw new FormatException("The start date was entered incorrectly");
 
             if (lastDate.Year == 1)
-                throw new OverflowException("The last date was entered incorrectly");
+                throw new FormatException("The last date was entered incorrectly");
 
             var searhedSales = Sales.Where(i => i.Date >= startDate && i.Date <= lastDate && i.IsDeleted == false);
             if (searhedSales.Count() == 0)
@@ -277,7 +277,7 @@ namespace ConsoleProject.Services
         public IEnumerable<Sale> SearchSalesForDate(DateTime date)
         {
             if (date.Year == 1)
-                throw new OverflowException("Date entered incorrectly");
+                throw new FormatException("Date entered incorrectly");
 
             var searhedSales = Sales.Where(i => i.Date.Day == date.Day && i.IsDeleted == false);
             if (searhedSales.Count() == 0)
@@ -289,7 +289,7 @@ namespace ConsoleProject.Services
         public Sale SearchSaleForID(int saleId)
         {
             if (saleId == 0)
-                throw new OverflowException("The sale's ID was entered incorrectly");
+                throw new FormatException("The sale's ID was entered incorrectly");
 
             Sale sale = Sales.FirstOrDefault(i => i.ID == saleId && i.IsDeleted == false);
 
