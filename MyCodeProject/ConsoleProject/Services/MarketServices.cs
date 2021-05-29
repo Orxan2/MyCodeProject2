@@ -15,7 +15,7 @@ namespace ConsoleProject.Services
        public List<Product> Products { get; set; }
        public List<Sale> Sales { get; set; }
 
-        List<Categories> categoryList = new();
+       public List<Categories> categoryList = new();
 
         
 
@@ -29,26 +29,27 @@ namespace ConsoleProject.Services
             categoryList.AddRange(Enum.GetValues<Categories>());
         }
 
-       public void AddProduct(string name, double price, Categories category,int quantity)
+       public void AddProduct(string name, double price, string category,int quantity)
         {
-
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException("name", "The product's name is empty");
-            //if (products.Exists(i=>i.Name == name))
-            //    throw new DuplicateWaitObjectException("name", "Bu məhsul artıq bazada var");
-            //mehsulun artiq olmasini yoxlayir
-           
+
+            if (Products.Exists(i => i.Name == name))
+                throw new DuplicateWaitObjectException("name", "Bu məhsul artıq bazada var");
+                        
             if (price <= 0)
                 throw new ArgumentOutOfRangeException("price", "The price of the product was entered incorrectly");
-            if (!categoryList.Contains(category))
-                throw new ArgumentException("The category of the product was entered incorrectly");
+
+            if (!categoryList.Exists(i => i.ToString() == category))
+                throw new ArgumentNullException("category", "The product's category was entered incorrectly");
+
             if (quantity <= 0)
-                throw new ArgumentOutOfRangeException("price", "The product's quantity must be greater than 0!");
+                throw new ArgumentOutOfRangeException("price", "The product's quantity must be number and greater than 0!");
 
             Product product = new();
             product.Name = name;
             product.Price = price;
-            product.Category = category;
+            product.Category = Enum.Parse<Categories>(category);
             product.Quantity = quantity;
             product.IsDeleted = false;
             Products.Add(product);
@@ -101,9 +102,6 @@ namespace ConsoleProject.Services
                      if(!string.IsNullOrEmpty(data.Name))
                             product.Name = data.Name;
 
-                    if (data.Category != null)
-                            product.Category = data.Category;
-
                     if(data.Price != 0)
                             product.Price = data.Price;
 
@@ -117,9 +115,9 @@ namespace ConsoleProject.Services
         {
             
             if (min <= 0)
-                throw new ArgumentOutOfRangeException("min", "Minimum price must be greater than 0");
+                throw new ArgumentOutOfRangeException("min", "Minimum price must be number and greater than 0");
             if (max <= 0)
-                throw new ArgumentOutOfRangeException("max", "Maximum price must be greater than 0");
+                throw new ArgumentOutOfRangeException("max", "Maximum price must be number and greater than 0");
 
             var searchedProducts = Products.Where(i=>i.Price <= max && i.Price >= min && i.IsDeleted == false);
             //if (string.IsNullOrEmpty(text))
@@ -129,49 +127,48 @@ namespace ConsoleProject.Services
             return searchedProducts;
         }
 
-        public IEnumerable<Product> SearchProductForCategory(Categories category)
+        public IEnumerable<Product> SearchProductForCategory(string category)
         {
 
-            if (!categoryList.Contains(category))
+            if (!categoryList.Exists(i=>i.ToString() == category))
                 throw new ArgumentException("The category of the product was entered incorrectly");
 
-            var searchedProducts = Products.Where(i => i.Category == category && i.IsDeleted == false);          
+            var searchedProducts = Products.Where(i => i.Category.ToString() == category && i.IsDeleted == false);          
 
             return searchedProducts;
         }
 
-        #region Bu Metodu Duzelt
-        public void AddSale(List<Product> saledProducts)
-        {
+        #region Add Sale
+        public void AddSale(Dictionary<int,int> datas)
+        {              
             Sale sale = new();
-
-            foreach (Product saledProduct in saledProducts)
+            foreach (KeyValuePair<int,int> data in datas)
             {
-                if (saledProduct.ID<=0)
+                if (data.Key <= 0)
                     throw new ArgumentNullException("The Product's ID was entered incorrectly");
 
-
-                Product product = Products.FirstOrDefault(i=>i.ID == saledProduct.ID && i.IsDeleted == false);
+                Product product = Products.FirstOrDefault(i => i.ID == data.Key && i.IsDeleted == false);
 
                 if (product == null)
                     throw new KeyNotFoundException("The product was not found");
 
-                if (saledProduct.Quantity > product.Quantity)
+                if (data.Value > product.Quantity)
                     throw new KeyNotFoundException("Bazada Bu QƏdər Məhsul Yoxdur");
                 SaleItem saleItem = new();
                 saleItem.Product = product;
-                saleItem.Quantity = saledProduct.Quantity;
+                Console.WriteLine($"my Product's Price : {saleItem.Product.Price} \n My Product's Name : {saleItem.Product.Name} \n My Product's Isdeleted : {product.IsDeleted}");
+                saleItem.Quantity = data.Value;
 
-                sale.Price += saleItem.Product.Price * saleItem.Quantity;               
+                sale.Price += saleItem.Product.Price * saleItem.Quantity;
                 //Products.FirstOrDefault(i => i.ID == saledProduct.ID).Quantity -= saledProduct.Quantity;
                 sale.SaleItems.Add(saleItem);
             }
-            foreach (var saledProduct in saledProducts)//2-ci və ya sonrakı satış məhsullarını əlavə edəndə Exception olsa 1-i silməsin deyə təkrar yazdım
+
+            foreach (KeyValuePair<int, int> data in datas)//2-ci və ya sonrakı satış məhsullarını əlavə edəndə Exception olsa 1-i silməsin deyə təkrar yazdım
             {
-                Products.FirstOrDefault(i => i.ID == saledProduct.ID).Quantity -= saledProduct.Quantity;
+                Products.FirstOrDefault(i => i.ID == data.Key).Quantity -= data.Value;
             }
-            Sales.Add(sale);           
-          
+            Sales.Add(sale);
         }
         #endregion
 
@@ -279,31 +276,25 @@ namespace ConsoleProject.Services
 
         public void ReturnProductFromSale(string name,int saleId,int quantity)
         {
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentNullException("name", "Məhsulun adı doğru daxil edilməyib");
+
             if (saleId == 0)
                 throw new ArgumentNullException("saleId", "Satisin kodu dogru daxil edilmeyib");
 
-            if (Sales.Exists(i => i.ID != saleId || i.IsDeleted == true))
+            if (!Sales.Exists(i => i.ID == saleId && i.IsDeleted == false))
                 throw new KeyNotFoundException("daxil etdiyiniz koda uygun satis yoxdur ya da silinib");
 
             Sale sale = Sales.FirstOrDefault(i => i.ID == saleId);
-
-            if (sale.IsDeleted == true)
-                sale.IsDeleted = false;
-
-            if (string.IsNullOrEmpty(name)) 
-                throw new ArgumentNullException("name", "Məhsulun adı doğru daxil edilməyib");
 
             if (sale.SaleItems.Exists(i => i.Product.Name != name))
                 throw new KeyNotFoundException("Qebzde satilmis mehsullar arasinda bu mehsul yoxdur");
 
             if (quantity==0)
                 throw new ArgumentNullException("quantity", "Qebzdeki satilmis Məhsulun sayı doğru daxil edilməyib");     
+
             if(quantity > sale.SaleItems.Where(i => i.Product.Name == name).Sum(i => i.Quantity))
-
                 throw new ArgumentOutOfRangeException("quantity", "Qebzdeki mehsul bu qeder cox deyil");
-
-            //if (sale == null)
-            //    throw new ArgumentException("Satış tapılmadı");
 
             foreach (var saleItem in sale.SaleItems)
             {

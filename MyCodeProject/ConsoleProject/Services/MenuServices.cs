@@ -45,20 +45,10 @@ namespace ConsoleProject.Services
             //Console.WriteLine();
         }
 
-
-
-
-
         public static void AddProductMenu()             
         {          
             Console.Write("Please enter product's name : ");
             string name = Console.ReadLine();
-            if (operations.Products.Exists(i => i.Name == name))
-            {
-                Console.WriteLine("This product is already in the database");
-                return;
-            }
-            
 
             Console.Write("Please enter product's category : ");
             string category = Console.ReadLine();
@@ -67,12 +57,11 @@ namespace ConsoleProject.Services
             int.TryParse(Console.ReadLine(), out int quantity);
 
             Console.Write("Please enter product's price (x.xx): ");
-            double price = double.Parse(Console.ReadLine());
-
+            double.TryParse(Console.ReadLine(),out double price);
 
             try
             {            
-                operations.AddProduct(name, price, Enum.Parse<Categories>(category), quantity);
+                operations.AddProduct(name, price, category, quantity);
                 Console.WriteLine("Product has been Inserted");
             }
 
@@ -89,17 +78,13 @@ namespace ConsoleProject.Services
             {
                 Console.WriteLine(ex.Message);
             }
-            catch (ArgumentException ex)
-            {             
-             //Console.ForegroundColor =  ConsoleColor.Red;
-                Console.WriteLine("Category entered incorrectly!");
-               
-                //Console.WriteLine(ex.Message);
+            catch (KeyNotFoundException ex)
+            {           
+                Console.WriteLine(ex.Message);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Console.WriteLine("An unexpected error occurred!");
-                //Console.WriteLine($"Message : {ex.Message} \n Type : {ex.GetType()}");
             }
 
         }
@@ -159,14 +144,12 @@ namespace ConsoleProject.Services
                         table.AddRow(searchedProduct.ID, searchedProduct.Name, searchedProduct.Category, searchedProduct.Price.ToString("0.00"), searchedProduct.Quantity);
                 }
                 table.Write();
-                //Console.WriteLine();
             }
             catch (ArgumentNullException ex)
             {
                 Console.WriteLine(ex.Message);
             }
         }
-
         public static void EditProductMenu()
         {
             Console.Write("Please enter the product ID you want to edit : ");
@@ -177,7 +160,8 @@ namespace ConsoleProject.Services
                 return;
             }
             int selection = 0;
-            Product data = new();
+            //Product data = new(); // instance yaradanda ID artdigi ucun listden bir product goturdum
+            Product data = operations.Products.FirstOrDefault();
             do
             {
                 Console.WriteLine("1.Name 2.Category 3.Price(x.xx) 4.Quantity 0.I don't want to change anymore");
@@ -202,9 +186,9 @@ namespace ConsoleProject.Services
                     case 2:
                         {
                             Console.Write("Product's category : ");
-
-                            if (Enum.TryParse<Categories>(Console.ReadLine(), false, out Categories category))
-                                data.Category = category;                            
+                            string category = Console.ReadLine();
+                            if (operations.categoryList.Exists(i => i.ToString() == category))
+                                data.Category = Enum.Parse<Categories>(category);
                             else
                                 Console.WriteLine("The category was entered incorrectly");
                             break;
@@ -231,13 +215,9 @@ namespace ConsoleProject.Services
                         Console.WriteLine("You pressed the wrong button");
                         break;
                 }
-            } while (selection != 0);
-
-            operations.EditProduct(index, data);
-            Console.WriteLine("The product has been updated");
+            } while (selection != 0);          
 
         }
-
         public static void SearchProductMenuForPrice()
         {
             Console.Write("Please enter a minimum price (x.xx) : ");
@@ -263,7 +243,6 @@ namespace ConsoleProject.Services
                 Console.WriteLine(ex.Message);
             }
         }
-
         public static void SearchProductMenuForCategory()
         {
             Console.Write("Please enter category for search : ");
@@ -271,7 +250,7 @@ namespace ConsoleProject.Services
 
             try
             {
-                var searchedProducts = operations.SearchProductForCategory(Enum.Parse<Categories>(category));
+                var searchedProducts = operations.SearchProductForCategory(category);
                 var table = new ConsoleTable("ID", "Name", "Category", "Price (AZN)", "Quantity");
                 foreach (var searchedProduct in searchedProducts)
                 {
@@ -280,44 +259,35 @@ namespace ConsoleProject.Services
                 }
                 table.Write();
             }
-            catch (ArgumentException)
+            catch (ArgumentException ex)
             {
-                Console.WriteLine("The category was entered incorrectly");
+                Console.WriteLine(ex.Message);
             }
         }
 
-
-        #region burani duzelt 
+        #region Add Sale Menu
 
         public static void AddSaleMenu()
-        {
-            List<Product> saledProducts = new();
-            string selection = string.Empty;
-
+        {          
+           string selection = string.Empty;
+            Dictionary<int, int> data = new();
             do
-            {
-                Product saledProduct = new();
-               
-
+            {             
                 Console.Write("Please enter the product ID you want to sell : ");
                 int.TryParse(Console.ReadLine(), out int code);
 
-                Console.Write("Please enter product number : ");
+                Console.Write("How many products do you want to add? : ");
                 int.TryParse(Console.ReadLine(), out int quantity);
 
-                saledProduct.ID = code;
-                saledProduct.Quantity = quantity;
-                saledProducts.Add(saledProduct);
-
-                Console.WriteLine("Tap 1 to add a new product, otherwise anywhere else : ");
+                data.Add(code,quantity);
+                Console.WriteLine("Tap 1 to add another new product, otherwise anywhere else : ");
                 selection = Console.ReadLine();
 
             } while (selection == "1");
 
-
             try
             {
-                operations.AddSale(saledProducts);
+                operations.AddSale(data);
                 Console.WriteLine("Sale has been Inserted");
             }
             catch (ArgumentNullException ex)
@@ -332,7 +302,6 @@ namespace ConsoleProject.Services
             catch (Exception)
             {
                 Console.WriteLine("An unexpected error occurred!");
-                //Console.WriteLine($"Message : {ex.Message} \n Type : {ex.GetType()}");
             }
         }
         #endregion
@@ -341,6 +310,7 @@ namespace ConsoleProject.Services
         {
             Console.WriteLine("Please enter the ID of the sale you want to delete : ");
             int.TryParse(Console.ReadLine(), out int saleId);
+
             try
             {
                 operations.DeleteSale(saleId);
@@ -383,10 +353,10 @@ namespace ConsoleProject.Services
         }
         public static void SearchSalesForPriceMenu()
         {
-            Console.Write("Please enter a minimum price for search (x,xx) : ");
+            Console.Write("Please enter a minimum price for search (x.xx) : ");
             double.TryParse(Console.ReadLine(), out double minimum);
 
-            Console.Write("Please enter a maximum price for search (x,xx) : ");
+            Console.Write("Please enter a maximum price for search (x.xx) : ");
             double.TryParse(Console.ReadLine(), out double maximum);
 
             try
@@ -506,7 +476,7 @@ namespace ConsoleProject.Services
             Console.WriteLine("Which will be deleted from sale? : ");
             int.TryParse(Console.ReadLine(),out int saleId);
 
-            Console.WriteLine("how many do you want to return : ");
+            Console.WriteLine("How many products do you want to return : ");
             int.TryParse(Console.ReadLine(), out int quantity);
 
             try

@@ -14,15 +14,15 @@ namespace ConsoleProject.Data.Common
         public List<Product> Products { get; set; }
         public List<Sale> Sales { get; set; }
                   
-        public void AddProduct(string name, double price, Categories category, int quantity);
+        public void AddProduct(string name, double price, string category, int quantity);
         public void DeleteProduct(int productNo);
         public IEnumerable<Product> SearchProduct(string text);
         public void EditProduct(int productNo, Product data);
         public IEnumerable<Product> SearchProductForPrice(double min, double max);
-        public IEnumerable<Product> SearchProductForCategory(Categories category);
+        public IEnumerable<Product> SearchProductForCategory(string category);
 
 
-        public void AddSale(List<Product> saledProducts);
+        //public void AddSale(List<Product> saledProducts);
         public void ReturnProductFromSale(string name, int saleId, int quantity);
         public void DeleteSale(int saleİd);
         public IEnumerable<Sale> SearchSalesForDateInterval(DateTime first,DateTime last);

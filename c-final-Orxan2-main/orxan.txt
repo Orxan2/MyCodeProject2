@@ -1,0 +1,52 @@
+-- Menu Sevice Class-daki emeliyyat  
+//List<Product> saledProducts = new();
+            //string selection = string.Empty;
+
+            //do
+            //{
+            //    Product saledProduct = new();
+
+
+            //    Console.Write("Please enter the product ID you want to sell : ");
+            //    int.TryParse(Console.ReadLine(), out int code);
+
+            //    Console.Write("Please enter product number : ");
+            //    int.TryParse(Console.ReadLine(), out int quantity);
+
+            //    saledProduct.ID = code;
+            //    saledProduct.Quantity = quantity;
+            //    saledProducts.Add(saledProduct);
+
+            //    Console.WriteLine("Tap 1 to add a new product, otherwise anywhere else : ");
+            //    selection = Console.ReadLine();
+
+            //} while (selection == "1");
+ -- Menu service deki emeliyyat
+ //Sale sale = new();
+
+            //foreach (Product saledProduct in saledProducts)
+            //{
+            //    if (saledProduct.ID<=0)
+            //        throw new ArgumentNullException("The Product's ID was entered incorrectly");
+
+
+            //    Product product = Products.FirstOrDefault(i=>i.ID == saledProduct.ID && i.IsDeleted == false);
+
+            //    if (product == null)
+            //        throw new KeyNotFoundException("The product was not found");
+
+            //    if (saledProduct.Quantity > product.Quantity)
+            //        throw new KeyNotFoundException("Bazada Bu QƏdər Məhsul Yoxdur");
+            //    SaleItem saleItem = new();
+            //    saleItem.Product = product;
+            //    saleItem.Quantity = saledProduct.Quantity;
+
+            //    sale.Price += saleItem.Product.Price * saleItem.Quantity;               
+            //    //Products.FirstOrDefault(i => i.ID == saledProduct.ID).Quantity -= saledProduct.Quantity;
+            //    sale.SaleItems.Add(saleItem);
+            //}
+            //foreach (var saledProduct in saledProducts)//2-ci və ya sonrakı satış məhsullarını əlavə edəndə Exception olsa 1-i silməsin deyə təkrar yazdım
+            //{
+            //    Products.FirstOrDefault(i => i.ID == saledProduct.ID).Quantity -= saledProduct.Quantity;
+            //}
+            //Sales.Add(sale);        
