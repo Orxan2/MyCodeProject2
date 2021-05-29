@@ -73,13 +73,8 @@ namespace ConsoleProject.Services
             {
                 Console.WriteLine(ex.Message);
             }
-            
-            catch (ArgumentOutOfRangeException ex)
+            catch (OverflowException ex)
             {
-                Console.WriteLine(ex.Message);
-            }
-            catch (KeyNotFoundException ex)
-            {           
                 Console.WriteLine(ex.Message);
             }
             catch (Exception)
@@ -99,44 +94,52 @@ namespace ConsoleProject.Services
                 operations.DeleteProduct(index);
                 Console.WriteLine("Product has been deleted");
             }
-            catch (ArgumentNullException ex)
+            catch (OverflowException ex)
             {
                 Console.WriteLine(ex.Message);
             }
-            catch (KeyNotFoundException ex)
+            catch (NullReferenceException ex)
             {
                 Console.WriteLine(ex.Message);
             }
-           
+            catch (Exception)
+            {
+                Console.WriteLine("An unexpected error occurred!");
+            }
+
         }
-        public static void ReturnProductMenu()
+        public static void RestoreProductMenu()
         {
             Console.Write("Please enter the ID of the product you want to restore : ");
             int.TryParse(Console.ReadLine(), out int index);
 
             try
             {
-                operations.ReturnProduct(index);
+                operations.RestoreProduct(index);
                 Console.WriteLine("Product has been restored");
             }
-            catch (ArgumentNullException ex)
+            catch (OverflowException ex)
             {
                 Console.WriteLine(ex.Message);
             }
-            catch (KeyNotFoundException ex)
+            catch (NullReferenceException ex)
             {
                 Console.WriteLine(ex.Message);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("An unexpected error occurred!");
             }
 
         }
-        public static void SearchProductMenu()
+        public static void SearchProductMenuForName()
         {
             Console.Write("Please enter product's name : ");
             string search = Console.ReadLine();
 
             try
             {
-               var searchedProducts = operations.SearchProduct(search);
+               var searchedProducts = operations.SearchProductForName(search);
                 var table = new ConsoleTable("ID", "Name", "Category", "Price (AZN)", "Quantity");
                 foreach (var searchedProduct in searchedProducts)
                 {
@@ -148,6 +151,10 @@ namespace ConsoleProject.Services
             catch (ArgumentNullException ex)
             {
                 Console.WriteLine(ex.Message);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("An unexpected error occurred!");
             }
         }
         public static void EditProductMenu()
@@ -236,11 +243,14 @@ namespace ConsoleProject.Services
                         table.AddRow(searchedProduct.ID, searchedProduct.Name, searchedProduct.Category, searchedProduct.Price.ToString("0.00"), searchedProduct.Quantity);
                 }
                 table.Write();
-                //Console.WriteLine();
             }
             catch (ArgumentOutOfRangeException ex)
             {
                 Console.WriteLine(ex.Message);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("An unexpected error occurred!");
             }
         }
         public static void SearchProductMenuForCategory()
@@ -259,9 +269,13 @@ namespace ConsoleProject.Services
                 }
                 table.Write();
             }
-            catch (ArgumentException ex)
+            catch (OverflowException ex)
             {
                 Console.WriteLine(ex.Message);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("An unexpected error occurred!");
             }
         }
 
@@ -290,12 +304,16 @@ namespace ConsoleProject.Services
                 operations.AddSale(data);
                 Console.WriteLine("Sale has been Inserted");
             }
-            catch (ArgumentNullException ex)
+            catch (OverflowException ex)
             {
                 Console.WriteLine(ex.Message);
             }
 
-            catch (KeyNotFoundException ex)
+            catch (NullReferenceException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (ArgumentOutOfRangeException ex)
             {
                 Console.WriteLine(ex.Message);
             }
@@ -316,7 +334,7 @@ namespace ConsoleProject.Services
                 operations.DeleteSale(saleId);
                 Console.WriteLine("Sale has been deleted");
             }
-            catch (ArgumentNullException ex)
+            catch (OverflowException ex)
             {
                 Console.WriteLine(ex.Message);
             }
@@ -338,7 +356,7 @@ namespace ConsoleProject.Services
                 operations.RestoreSale(saleId);
                 Console.WriteLine("Sale has been restored");
             }
-            catch (ArgumentNullException ex)
+            catch (OverflowException ex)
             {
                 Console.WriteLine(ex.Message);
             }
@@ -351,7 +369,7 @@ namespace ConsoleProject.Services
                 Console.WriteLine("An unexpected error occurred!");
             }
         }
-        public static void SearchSalesForPriceMenu()
+        public static void SearchSalesMenuForPrice()
         {
             Console.Write("Please enter a minimum price for search (x.xx) : ");
             double.TryParse(Console.ReadLine(), out double minimum);
@@ -365,7 +383,7 @@ namespace ConsoleProject.Services
                 var searchTable = new ConsoleTable("ID", "Total Price", "Product Quantity", "Sell by");
                 foreach (var searchedSale in searchedSales)
                 {
-                    searchTable.AddRow(searchedSale.ID, searchedSale.Price.ToString("0.00"), searchedSale.SaleItems.Count(), searchedSale.Date);
+                    searchTable.AddRow(searchedSale.ID, searchedSale.Price.ToString("0.00"), searchedSale.SaleItems.Sum(i => i.Quantity), searchedSale.Date);
                 }
                 searchTable.Write();
             }
@@ -373,9 +391,13 @@ namespace ConsoleProject.Services
             {
                 Console.WriteLine(ex.Message);
             }
+            catch (Exception)
+            {
+                Console.WriteLine("An unexpected error occurred!");
+            }
         }
 
-       public static void SearchSalesForDateInterval()
+       public static void SearchSalesMenuForDateInterval()
         {
             Console.Write("Please enter a start date for search (mm/dd/yyyy) : ");
             DateTime.TryParse(Console.ReadLine(), out DateTime minimum);
@@ -389,11 +411,11 @@ namespace ConsoleProject.Services
                 var searchTable = new ConsoleTable("ID", "Total Price", "Product Quantity", "Sell by");
                 foreach (var searchedSale in searchedSales)
                 {
-                    searchTable.AddRow(searchedSale.ID, searchedSale.Price.ToString("0.00"), searchedSale.SaleItems.Count(), searchedSale.Date);
+                    searchTable.AddRow(searchedSale.ID, searchedSale.Price.ToString("0.00"), searchedSale.SaleItems.Sum(i => i.Quantity), searchedSale.Date);
                 }
                 searchTable.Write();
             }
-            catch (ArgumentNullException ex)
+            catch (OverflowException ex)
             {
                 Console.WriteLine(ex.Message);
             }
@@ -401,24 +423,23 @@ namespace ConsoleProject.Services
             {
                 Console.WriteLine(ex.Message);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.WriteLine($"{ex.GetType()} - {ex.Message}");
-                //Console.WriteLine("Gözlənilməz bir xəta baş verdi");
+                Console.WriteLine("An unexpected error occurred!");
             }
 
         }
 
-        public static void DisplaySaleİtemsMenu()
+        public static void SearchSaleMenuForID()
         {
             Console.WriteLine("Please enter sale's ID : ");
             int.TryParse(Console.ReadLine(),out int saleId);
 
             try
             {
-                Sale searchedSale = operations.DisplaySaleİtems(saleId);
+                Sale searchedSale = operations.SearchSaleForID(saleId);
                 var saleTable = new ConsoleTable("ID", "Total Price", "Product Quantity", "Sell by");
-                saleTable.AddRow(searchedSale.ID, searchedSale.Price.ToString("0.00"), searchedSale.SaleItems.Count(), searchedSale.Date);
+                saleTable.AddRow(searchedSale.ID, searchedSale.Price.ToString("0.00"), searchedSale.SaleItems.Sum(i => i.Quantity), searchedSale.Date);
                 saleTable.Write();
                 
                 var saleItemsTable = new ConsoleTable("ID", "Product Name", "Product Quantity");
@@ -428,7 +449,11 @@ namespace ConsoleProject.Services
                 }
                 saleItemsTable.Write();
             }
-            catch (ArgumentNullException ex)
+            catch (OverflowException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (NullReferenceException ex)
             {
                 Console.WriteLine(ex.Message);
             }
@@ -438,7 +463,7 @@ namespace ConsoleProject.Services
             }
         }
 
-        public static void SearchSalesForDate()
+        public static void SearchSalesMenuForDate()
         {
             Console.Write("Please enter a date for search (mm/dd/yyyy) : ");
             DateTime.TryParse(Console.ReadLine(), out DateTime minimum);           
@@ -449,11 +474,11 @@ namespace ConsoleProject.Services
                 var searchTable = new ConsoleTable("ID", "Total Price", "Product Quantity", "Sell by");
                 foreach (var searchedSale in searchedSales)
                 {
-                    searchTable.AddRow(searchedSale.ID, searchedSale.Price.ToString("0.00"), searchedSale.SaleItems.Count(), searchedSale.Date);
+                    searchTable.AddRow(searchedSale.ID, searchedSale.Price.ToString("0.00"), searchedSale.SaleItems.Sum(i => i.Quantity), searchedSale.Date);
                 }
                 searchTable.Write();
             }
-            catch (ArgumentNullException ex)
+            catch (OverflowException ex)
             {
                 Console.WriteLine(ex.Message);
             }
@@ -461,10 +486,9 @@ namespace ConsoleProject.Services
             {
                 Console.WriteLine(ex.Message);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.WriteLine($"{ex.GetType()} - {ex.Message}");
-                //Console.WriteLine("Gözlənilməz bir xəta baş verdi");
+                Console.WriteLine("An unexpected error occurred!");
             }
         }
 
@@ -475,7 +499,7 @@ namespace ConsoleProject.Services
 
             Console.WriteLine("Which will be deleted from sale? : ");
             int.TryParse(Console.ReadLine(),out int saleId);
-
+           
             Console.WriteLine("How many products do you want to return : ");
             int.TryParse(Console.ReadLine(), out int quantity);
 
@@ -485,6 +509,10 @@ namespace ConsoleProject.Services
                 Console.WriteLine("the product has been returned");
             }
             catch (ArgumentNullException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (OverflowException ex)
             {
                 Console.WriteLine(ex.Message);
             }

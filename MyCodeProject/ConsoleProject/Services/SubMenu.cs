@@ -49,10 +49,10 @@ namespace ConsoleProject.Services
                         MenuServices.DeleteProductMenu();
                         break;
                     case 4:
-                        MenuServices.ReturnProductMenu();
+                        MenuServices.RestoreProductMenu();
                         break;
                     case 5:
-                        MenuServices.SearchProductMenu();
+                        MenuServices.SearchProductMenuForName();
                         break;
                     case 6:
                         MenuServices.EditProductMenu();
@@ -120,16 +120,16 @@ namespace ConsoleProject.Services
                         MenuServices.DisplaySaleList();
                         break;
                     case 6:
-                        MenuServices.SearchSalesForDateInterval();
+                        MenuServices.SearchSalesMenuForDateInterval();
                         break;
                     case 7:
-                        MenuServices.SearchSalesForPriceMenu();
+                        MenuServices.SearchSalesMenuForPrice();
                         break;
                     case 8:
-                        MenuServices.SearchSalesForDate();
+                        MenuServices.SearchSalesMenuForDate();
                         break;
                     case 9:
-                        MenuServices.DisplaySaleİtemsMenu();
+                        MenuServices.SearchSaleMenuForID();
                         break;
 
                     case 0:

@@ -16,20 +16,21 @@ namespace ConsoleProject.Data.Common
                   
         public void AddProduct(string name, double price, string category, int quantity);
         public void DeleteProduct(int productNo);
-        public IEnumerable<Product> SearchProduct(string text);
+        public IEnumerable<Product> SearchProductForName(string text);
         public void EditProduct(int productNo, Product data);
         public IEnumerable<Product> SearchProductForPrice(double min, double max);
         public IEnumerable<Product> SearchProductForCategory(string category);
 
 
-        //public void AddSale(List<Product> saledProducts);
+        public void AddSale(Dictionary<int, int> datas);
         public void ReturnProductFromSale(string name, int saleId, int quantity);
         public void DeleteSale(int saleİd);
         public IEnumerable<Sale> SearchSalesForDateInterval(DateTime first,DateTime last);
         public IEnumerable<Sale> SearchSalesForPrice(double minValue, double maxValue);
         public IEnumerable<Sale> SearchSalesForDate(DateTime date);
-        public Sale DisplaySaleİtems(int saleId);
-
+        public Sale SearchSaleForID(int saleId);
+        public void RestoreProduct(int productNo);
+        public void RestoreSale(int saleId);
 
     }
 }
