@@ -44,6 +44,7 @@ namespace ConsoleProject.Services
         /// <exception cref="System.FormatException">Data yanlış daxil edilərsə, meydana gəlir.</exception>
         public void AddProduct(string name, double price, string category, int quantity)
         {
+           
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException("name", "The product's name is empty");
 
@@ -209,8 +210,11 @@ namespace ConsoleProject.Services
             {
                 if (product.ID == productNo && product.IsDeleted == false)
                 {
-                    if (!string.IsNullOrEmpty(data.Name))
+                    if (!(string.IsNullOrEmpty(data.Name)))
                         product.Name = data.Name;
+
+                    if (data.Category != Categories.xeta)
+                        product.Category = data.Category;
 
                     if (data.Price != 0)
                         product.Price = data.Price;

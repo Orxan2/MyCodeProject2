@@ -389,7 +389,6 @@ namespace ConsoleProject.Services
             }
             int selection = 0;
             Product data = new();
-            //Product data = operations.Products.FirstOrDefault();
 
             do
             {

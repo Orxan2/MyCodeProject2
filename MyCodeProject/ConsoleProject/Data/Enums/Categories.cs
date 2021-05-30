@@ -8,6 +8,7 @@ namespace ConsoleProject.Data.Enums
 {
    public enum Categories
     {
+        xeta,
         Drinks,
         Fruits,
         Sweets,
