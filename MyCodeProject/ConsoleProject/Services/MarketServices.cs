@@ -205,24 +205,20 @@ namespace ConsoleProject.Services
         /// <returns> Geriyə bir dəyər qaytarmır.Sadəcə məhsulun datalarını yeniləyir.</returns>       
         public void EditProduct(int productNo, Product data)
         {
-           
-            foreach (var product in Products)
-            {
-                if (product.ID == productNo && product.IsDeleted == false)
-                {
-                    if (!(string.IsNullOrEmpty(data.Name)))
-                        product.Name = data.Name;
+            Product product = Products.FirstOrDefault(i => i.ID == productNo && i.IsDeleted == false);
+
+            if (!(string.IsNullOrEmpty(data.Name)))
+                product.Name = data.Name;
 
                     if (data.Category != Categories.xeta)
-                        product.Category = data.Category;
+                product.Category = data.Category;
 
                     if (data.Price != 0)
-                        product.Price = data.Price;
+                product.Price = data.Price;
 
                     if (data.Quantity != 0)
-                        product.Quantity = data.Quantity;
-                }
-            }
+                product.Quantity = data.Quantity;               
+            
         }
                
         /// <summary>

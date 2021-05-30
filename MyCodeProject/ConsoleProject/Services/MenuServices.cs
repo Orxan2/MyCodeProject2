@@ -389,6 +389,7 @@ namespace ConsoleProject.Services
             }
             int selection = 0;
             Product data = new();
+           
 
             do
             {
@@ -408,6 +409,7 @@ namespace ConsoleProject.Services
                     case 1:
                         {
                             Console.Write("Product's name : ");
+                           //data.Name = Console.ReadLine();
                             string name = Console.ReadLine();
                             if (string.IsNullOrEmpty(name))
                                 Console.WriteLine("The product's name is empty");
@@ -424,7 +426,7 @@ namespace ConsoleProject.Services
                             if (operations.categoryList.Exists(i => i.ToString() == category))
                                 data.Category = Enum.Parse<Categories>(category);
                             else
-                                Console.WriteLine("The category was entered incorrectly");
+                                Console.WriteLine("Product's category was inserted incorrectly");
                             break;
                         }
                     // Məhsul Qiyməti daxil edilir və yoxlanılır
@@ -432,6 +434,7 @@ namespace ConsoleProject.Services
                         {
                             Console.Write("Product's price (x.xx) : ");
                             double.TryParse(Console.ReadLine(), out double price);
+                            //data.Price = price;
                             if (price <= 0)
                                 Console.WriteLine("The price of the product was entered incorrectly");
                             else
@@ -444,10 +447,11 @@ namespace ConsoleProject.Services
                         {
                             Console.Write("Product's quantity : ");
                             int.TryParse(Console.ReadLine(), out int quantity);
+                            //data.Quantity = quantity;
                             if (quantity <= 0)
                                 Console.WriteLine("The quantity of the product was entered incorrectly");
                             else
-                                data.Quantity = quantity;                           
+                                data.Quantity = quantity;
 
                             break;
                         }
@@ -457,8 +461,14 @@ namespace ConsoleProject.Services
                 }
             } while (selection != 0);
 
-            operations.EditProduct(index, data);
-
+            try
+            {
+                operations.EditProduct(index, data);
+            }         
+            catch (Exception)
+            {
+                Console.WriteLine("\n An unexpected error occurred!");
+            }
         }
 
         // Bu metod RestoreProduct metodunu çağırır
