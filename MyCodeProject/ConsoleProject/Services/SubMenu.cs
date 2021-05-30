@@ -8,6 +8,9 @@ namespace ConsoleProject.Services
 {
     class SubMenu
     {
+        // Bu Class-dakı 2 metod vasitəsilə Product və ya Sale Menularına gedilir.
+
+
         public static void ShowProductOperations()
         {
            

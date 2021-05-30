@@ -13,37 +13,29 @@ namespace ConsoleProject.Services
     
    public static class MenuServices
     {
-       
+       // Bu Class-da MarketServis-dəki Metodları Çağırıb,onlara parametrlər yollayıb,try..catch strukturu ilə xətaları idarə edirik.
+        
         static MarketServices operations = new();
 
-        #region Display
+        #region Call Display Operations 
+
+        // Məhsullar Siyahısını Göstərəcək
         public static void DisplayProductList()
         {
-
-            var table = new ConsoleTable("ID", "Name", "Category", "Price (AZN)", "Quantity");
-            foreach (var product in operations.Products)
-            {
-                if (product.IsDeleted == false)
-                    table.AddRow(product.ID, product.Name, product.Category, product.Price.ToString("0.00"), product.Quantity);
-
-            }
-            table.Write();
+            DisplayProducts(operations.Products);
         }
+
+        // Satışlar Siyahısını Göstərəcək
         public static void DisplaySaleList()
         {
-
-            var table = new ConsoleTable("ID", "Total Price", "Product Quantity", "Sell by");
-            foreach (var sale in operations.Sales)
-            {
-                if (sale.IsDeleted == false)
-                    table.AddRow(sale.ID, sale.Price.ToString("0.00"), sale.SaleItems.Sum(i => i.Quantity), sale.Date);
-            }
-            table.Write();
-            //Console.WriteLine();
+            DisplaySales(operations.Sales);
         }
+
         #endregion
 
-        #region Addings
+        #region Call Add Operations
+
+        //AddProduct Metodunu Çağırır
         public static void AddProductMenu()
         {
             Console.Write("Please enter product's name : ");
@@ -80,10 +72,14 @@ namespace ConsoleProject.Services
                 Console.WriteLine("An unexpected error occurred!");
             }
         }
+       
+        //AddSale Metodunu Çağırır
         public static void AddSaleMenu()
         {
             string selection = string.Empty;
             Dictionary<int, int> datas = new();
+
+            //İstifadəçinin istədiyi qədər məhsulu satışa əlavə edə bilməsi üçün dövr qurulur.
             do
             {
                 Console.Write("Please enter the product ID you want to sell : ");
@@ -124,7 +120,9 @@ namespace ConsoleProject.Services
 
         #endregion
 
-        #region Removings
+        #region Call Remove Operaions
+
+        //DeleteProduct Metodunu Çağırır
         public static void DeleteProductMenu()
         {
             Console.Write("Please enter the ID of the product you want to delete : ");
@@ -149,6 +147,8 @@ namespace ConsoleProject.Services
             }
 
         }
+
+        //DeleteSale Metodunu Çağırır
         public static void DeleteSaleMenu()
         {
             Console.WriteLine("Please enter the ID of the sale you want to delete : ");
@@ -171,10 +171,13 @@ namespace ConsoleProject.Services
             {
                 Console.WriteLine("An unexpected error occurred!");
             }
-        }        
+        }
+
         #endregion
 
-        #region Searching
+        #region Call Search Operations
+
+        // Bu metod SearchProductForName metodunu çağırır və axtarışın nəticəsini göstərir.
         public static void SearchProductMenuForName()
         {
             Console.Write("Please enter product's name : ");
@@ -183,13 +186,7 @@ namespace ConsoleProject.Services
             try
             {
                 var searchedProducts = operations.SearchProductForName(search);
-                var table = new ConsoleTable("ID", "Name", "Category", "Price (AZN)", "Quantity");
-                foreach (var searchedProduct in searchedProducts)
-                {
-                    if (searchedProduct.IsDeleted == false)
-                        table.AddRow(searchedProduct.ID, searchedProduct.Name, searchedProduct.Category, searchedProduct.Price.ToString("0.00"), searchedProduct.Quantity);
-                }
-                table.Write();
+                DisplayProducts(searchedProducts.ToList<Product>());
             }
             catch (ArgumentNullException ex)
             {
@@ -200,6 +197,8 @@ namespace ConsoleProject.Services
                 Console.WriteLine("An unexpected error occurred!");
             }
         }
+
+        // Bu metod SearchSalesForPrice metodunu çağırır və axtarışın nəticəsini göstərir.
         public static void SearchSalesMenuForPrice()
         {
             Console.Write("Please enter a minimum price for search (x.xx) : ");
@@ -211,12 +210,7 @@ namespace ConsoleProject.Services
             try
             {
                 var searchedSales = operations.SearchSalesForPrice(minimum, maximum);
-                var searchTable = new ConsoleTable("ID", "Total Price", "Product Quantity", "Sell by");
-                foreach (var searchedSale in searchedSales)
-                {
-                    searchTable.AddRow(searchedSale.ID, searchedSale.Price.ToString("0.00"), searchedSale.SaleItems.Sum(i => i.Quantity), searchedSale.Date);
-                }
-                searchTable.Write();
+                DisplaySales(searchedSales.ToList<Sale>());               
             }
             catch (ArgumentOutOfRangeException ex)
             {
@@ -227,6 +221,8 @@ namespace ConsoleProject.Services
                 Console.WriteLine("An unexpected error occurred!");
             }
         }
+
+        // Bu metod SearchSalesForDateInterval metodunu çağırır və axtarışın nəticəsini göstərir.
         public static void SearchSalesMenuForDateInterval()
         {
             Console.Write("Please enter a start date for search (mm/dd/yyyy) : ");
@@ -238,12 +234,7 @@ namespace ConsoleProject.Services
             try
             {
                 var searchedSales = operations.SearchSalesForDateInterval(minimum, maximum);
-                var searchTable = new ConsoleTable("ID", "Total Price", "Product Quantity", "Sell by");
-                foreach (var searchedSale in searchedSales)
-                {
-                    searchTable.AddRow(searchedSale.ID, searchedSale.Price.ToString("0.00"), searchedSale.SaleItems.Sum(i => i.Quantity), searchedSale.Date);
-                }
-                searchTable.Write();
+                DisplaySales(searchedSales.ToList<Sale>());               
             }
             catch (FormatException ex)
             {
@@ -259,6 +250,8 @@ namespace ConsoleProject.Services
             }
 
         }
+
+        // Bu metod SearchSaleForID metodunu çağırır və axtarışın nəticəsini göstərir.
         public static void SearchSaleMenuForID()
         {
             Console.WriteLine("Please enter sale's ID : ");
@@ -266,11 +259,13 @@ namespace ConsoleProject.Services
 
             try
             {
+                // İD-ə görə Satışı tapıb göstərir
                 Sale searchedSale = operations.SearchSaleForID(saleId);
                 var saleTable = new ConsoleTable("ID", "Total Price", "Product Quantity", "Sell by");
                 saleTable.AddRow(searchedSale.ID, searchedSale.Price.ToString("0.00"), searchedSale.SaleItems.Sum(i => i.Quantity), searchedSale.Date);
                 saleTable.Write();
-
+            
+                //hər saleitem başqa bir cədvəldə göstərilir.
                 var saleItemsTable = new ConsoleTable("ID", "Product Name", "Product Quantity");
                 foreach (var SaleItem in searchedSale.SaleItems)
                 {
@@ -291,6 +286,8 @@ namespace ConsoleProject.Services
                 Console.WriteLine("An unexpected error occurred!");
             }
         }
+
+        // Bu metod SearchSalesForDate metodunu çağırır və axtarışın nəticəsini göstərir.
         public static void SearchSalesMenuForDate()
         {
             Console.Write("Please enter a date for search (mm/dd/yyyy) : ");
@@ -299,12 +296,7 @@ namespace ConsoleProject.Services
             try
             {
                 var searchedSales = operations.SearchSalesForDate(minimum);
-                var searchTable = new ConsoleTable("ID", "Total Price", "Product Quantity", "Sell by");
-                foreach (var searchedSale in searchedSales)
-                {
-                    searchTable.AddRow(searchedSale.ID, searchedSale.Price.ToString("0.00"), searchedSale.SaleItems.Sum(i => i.Quantity), searchedSale.Date);
-                }
-                searchTable.Write();
+                DisplaySales(searchedSales.ToList<Sale>());               
             }
             catch (FormatException ex)
             {
@@ -319,6 +311,8 @@ namespace ConsoleProject.Services
                 Console.WriteLine("An unexpected error occurred!");
             }
         }
+
+        // Bu metod SearchProductForPrice metodunu çağırır və axtarışın nəticəsini göstərir.
         public static void SearchProductMenuForPrice()
         {
             Console.Write("Please enter a minimum price (x.xx) : ");
@@ -330,13 +324,7 @@ namespace ConsoleProject.Services
             try
             {
                 var searchedProducts = operations.SearchProductForPrice(minimum, maximum);
-                var table = new ConsoleTable("ID", "Name", "Category", "Price (AZN)", "Quantity");
-                foreach (var searchedProduct in searchedProducts)
-                {
-                    if (searchedProduct.IsDeleted == false)
-                        table.AddRow(searchedProduct.ID, searchedProduct.Name, searchedProduct.Category, searchedProduct.Price.ToString("0.00"), searchedProduct.Quantity);
-                }
-                table.Write();
+                DisplayProducts(searchedProducts.ToList<Product>());                
             }
             catch (ArgumentOutOfRangeException ex)
             {
@@ -347,6 +335,8 @@ namespace ConsoleProject.Services
                 Console.WriteLine("An unexpected error occurred!");
             }
         }
+
+        // Bu metod SearchProductForCategory metodunu çağırır və axtarışın nəticəsini göstərir.
         public static void SearchProductMenuForCategory()
         {
             Console.Write("Please enter category for search : ");
@@ -355,13 +345,7 @@ namespace ConsoleProject.Services
             try
             {
                 var searchedProducts = operations.SearchProductForCategory(category);
-                var table = new ConsoleTable("ID", "Name", "Category", "Price (AZN)", "Quantity");
-                foreach (var searchedProduct in searchedProducts)
-                {
-                    if (searchedProduct.IsDeleted == false)
-                        table.AddRow(searchedProduct.ID, searchedProduct.Name, searchedProduct.Category, searchedProduct.Price.ToString("0.00"), searchedProduct.Quantity);
-                }
-                table.Write();
+                DisplayProducts(searchedProducts.ToList<Product>());                
             }
             catch (FormatException ex)
             {
@@ -375,9 +359,12 @@ namespace ConsoleProject.Services
 
         #endregion
 
-        #region Editing
+        #region Call Edit Operations
+
+        //Bu metodda switch..case ilə istifadəçinin seçim ilə edit edə bilməsini,do..while ilə də əməliyyatı təkrarlaya
+        //bilməsini təmin etdim     
         public static void EditProductMenu()
-        {
+        {            
             Console.Write("Please enter the product ID you want to edit : ");
             int.TryParse(Console.ReadLine(), out int index);
             if (!operations.Products.Exists(i => i.ID == index))
@@ -402,6 +389,7 @@ namespace ConsoleProject.Services
 
                 switch (selection)
                 {
+                    // Məhsul adı daxil edilir və yoxlanılır
                     case 1:
                         {
                             Console.Write("Product's name : ");
@@ -413,6 +401,7 @@ namespace ConsoleProject.Services
 
                             break;
                         }
+                    // Məhsul Kateqoriyası daxil edilir və yoxlanılır
                     case 2:
                         {
                             Console.Write("Product's category : ");
@@ -423,6 +412,7 @@ namespace ConsoleProject.Services
                                 Console.WriteLine("The category was entered incorrectly");
                             break;
                         }
+                    // Məhsul Qiyməti daxil edilir və yoxlanılır
                     case 3:
                         {
                             Console.Write("Product's price (x.xx) : ");
@@ -434,6 +424,7 @@ namespace ConsoleProject.Services
 
                             break;
                         }
+                    // Məhsul Sayı daxil edilir və yoxlanılır
                     case 4:
                         {
                             Console.Write("Product's quantity : ");
@@ -454,7 +445,9 @@ namespace ConsoleProject.Services
             operations.EditProduct(index, data);
 
         }
-            public static void RestoreProductMenu()
+
+        // Bu metod RestoreProduct metodunu çağırır
+        public static void RestoreProductMenu()
         {
             Console.Write("Please enter the ID of the product you want to restore : ");
             int.TryParse(Console.ReadLine(), out int index);
@@ -478,6 +471,8 @@ namespace ConsoleProject.Services
             }
 
         }
+
+        // Bu metod RestoreSale metodunu çağırır
         public static void RestoreSaleMenu()
         {
             Console.WriteLine("Please enter the ID of the sale you want to restore : ");
@@ -500,6 +495,8 @@ namespace ConsoleProject.Services
                 Console.WriteLine("An unexpected error occurred!");
             }
         }
+
+        // Bu metod ReturnProductFromSale metodunu çağırır
         public static void ReturnProductFromSaleMenu()
         {
             Console.WriteLine("Which product do you want to return:");
@@ -538,11 +535,33 @@ namespace ConsoleProject.Services
             }
 
         }
+
         #endregion
 
 
-        
 
-       
+        #region ConsoleTable Methods
+        private static void DisplayProducts(List<Product> products)
+        {
+            var table = new ConsoleTable("ID", "Name", "Category", "Price (AZN)", "Quantity");
+            foreach (var product in products)
+            {
+                if (product.IsDeleted == false) //Sadəcə silinməmiş məhsulları göstərəcək
+                    table.AddRow(product.ID, product.Name, product.Category, product.Price.ToString("0.00"), product.Quantity);
+            }
+            table.Write();
+        }
+        private static void DisplaySales(List<Sale> sales)
+        {
+            var table = new ConsoleTable("ID", "Total Price", "Product Quantity", "Sell by");
+            foreach (var sale in sales)
+            {
+                if (sale.IsDeleted == false)//Sadəcə silinməmiş satışları göstərəcək
+                    table.AddRow(sale.ID, sale.Price.ToString("0.00"), sale.SaleItems.Sum(i => i.Quantity), sale.Date);
+            }
+            table.Write();
+        }
+        #endregion
+
     }
 }

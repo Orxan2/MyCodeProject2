@@ -7,6 +7,7 @@ namespace ConsoleProject
     
     class Program
     {
+        // Bura Proqramın əsas Class-ıdır. Work on Products, Work on Sales və ya Exit əmrlərindən biri icra oluna bilər.
         static void Main(string[] args)
         {
            

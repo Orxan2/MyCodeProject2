@@ -12,7 +12,9 @@ namespace ConsoleProject.Services
 
     class MarketServices : IMarketable
     {
-       public List<Product> Products { get; set; }
+        //Bu Class-da Market ilə bağlı əməliyyatlar icra edilir və potensial xətalar təyin edilir.
+
+        public List<Product> Products { get; set; } 
        public List<Sale> Sales { get; set; }
 
        public List<Categories> categoryList = new();        
@@ -24,6 +26,8 @@ namespace ConsoleProject.Services
             
             categoryList.AddRange(Enum.GetValues<Categories>());
         }
+
+        
 
         #region Adding Operations
 
@@ -436,5 +440,7 @@ namespace ConsoleProject.Services
         }
 
         #endregion
+
+
 }
 }
