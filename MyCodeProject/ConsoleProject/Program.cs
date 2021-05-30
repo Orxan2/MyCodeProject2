@@ -10,7 +10,7 @@ namespace ConsoleProject
         // Bura Proqramın əsas Class-ıdır. Work on Products, Work on Sales və ya Exit əmrlərindən biri icra oluna bilər.
         static void Main(string[] args)
         {
-           
+            Console.ForegroundColor = ConsoleColor.Blue;
             Console.OutputEncoding = UTF8Encoding.UTF8;                  
 
             int selection = 0;

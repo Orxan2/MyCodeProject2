@@ -13,11 +13,12 @@ namespace ConsoleProject.Services
 
         public static void ShowProductOperations()
         {
-           
+            
             int selection = 0;
 
             do
             {
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("1. Display All Products");
                 Console.WriteLine("2. Add Product");
                 Console.WriteLine("3. Delete Product");
@@ -26,11 +27,13 @@ namespace ConsoleProject.Services
                 Console.WriteLine("6. Edit Product");
                 Console.WriteLine("7. Search Products For Price");
                 Console.WriteLine("8. Search Products For Category");
+                Console.WriteLine("0. Go Back");
+                Console.ForegroundColor = ConsoleColor.Blue;
+
+
                 
 
-                Console.WriteLine("0. Go Back");
-
-                Console.Write("Please Select a Command : ");
+                Console.Write("\n Please Select a Command : ");
 
                 string selectionStr = Console.ReadLine();
 
@@ -75,15 +78,17 @@ namespace ConsoleProject.Services
                         break;
                 }
             } while (selection != 0);
+
+
         }
 
         public static void ShowSaleOperations()
         {
+           
             int selection = 0;
-
             do
             {
-               
+                Console.ForegroundColor = ConsoleColor.Blue;
                 Console.WriteLine("1. Add Sale");
                 Console.WriteLine("2. Return Product From Sale");
                 Console.WriteLine("3. Delete Sale");
@@ -94,8 +99,9 @@ namespace ConsoleProject.Services
                 Console.WriteLine("8. Search Sales For Date");
                 Console.WriteLine("9. Search Sale and Sale Items For ID");
                 Console.WriteLine("0. Go Back");
+                Console.ForegroundColor = ConsoleColor.Green;
 
-                Console.Write("Please Select a Command : ");
+                Console.Write("\n Please Select a Command : ");
 
                 string selectionStr = Console.ReadLine();
 
@@ -143,6 +149,9 @@ namespace ConsoleProject.Services
                         break;
                 }
             } while (selection != 0);
+
+            
+
         }
     }
 }

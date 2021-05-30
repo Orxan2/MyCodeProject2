@@ -22,13 +22,28 @@ namespace ConsoleProject.Services
         // Məhsullar Siyahısını Göstərəcək
         public static void DisplayProductList()
         {
-            DisplayProducts(operations.Products);
+            try
+            {
+                DisplayProducts(operations.Products);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("\n An unexpected error occurred!");
+            }
         }
 
         // Satışlar Siyahısını Göstərəcək
         public static void DisplaySaleList()
         {
-            DisplaySales(operations.Sales);
+            try
+            {
+                DisplaySales(operations.Sales);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("\n An unexpected error occurred!");
+            }
+            
         }
 
         #endregion
@@ -57,19 +72,19 @@ namespace ConsoleProject.Services
             }
             catch (ArgumentNullException ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"\n {ex.Message}"); 
             }
             catch (DuplicateWaitObjectException ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"\n {ex.Message}");
             }
             catch (FormatException ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"\n {ex.Message}");
             }
             catch (Exception)
             {
-                Console.WriteLine("An unexpected error occurred!");
+                Console.WriteLine("\n An unexpected error occurred!");
             }
         }
        
@@ -101,20 +116,20 @@ namespace ConsoleProject.Services
             }
             catch (FormatException ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"\n {ex.Message}");
             }
 
             catch (ArgumentNullException ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"\n {ex.Message}");
             }
             catch (ArgumentOutOfRangeException ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"\n {ex.Message}");
             }
             catch (Exception)
             {
-                Console.WriteLine("An unexpected error occurred!");
+                Console.WriteLine("\n An unexpected error occurred!");
             }
         }
 
@@ -135,15 +150,15 @@ namespace ConsoleProject.Services
             }
             catch (FormatException ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"\n {ex.Message}");
             }
             catch (ArgumentNullException ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"\n {ex.Message}");
             }
             catch (Exception)
             {
-                Console.WriteLine("An unexpected error occurred!");
+                Console.WriteLine("\n An unexpected error occurred!");
             }
 
         }
@@ -161,15 +176,15 @@ namespace ConsoleProject.Services
             }
             catch (FormatException ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"\n {ex.Message}");
             }
             catch (KeyNotFoundException ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"\n {ex.Message}");
             }
             catch (Exception)
             {
-                Console.WriteLine("An unexpected error occurred!");
+                Console.WriteLine("\n An unexpected error occurred!");
             }
         }
 
@@ -190,11 +205,11 @@ namespace ConsoleProject.Services
             }
             catch (ArgumentNullException ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"\n {ex.Message}");
             }
             catch (Exception)
             {
-                Console.WriteLine("An unexpected error occurred!");
+                Console.WriteLine("\n An unexpected error occurred!");
             }
         }
 
@@ -214,11 +229,11 @@ namespace ConsoleProject.Services
             }
             catch (ArgumentOutOfRangeException ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"\n {ex.Message}");
             }
             catch (Exception)
             {
-                Console.WriteLine("An unexpected error occurred!");
+                Console.WriteLine("\n An unexpected error occurred!");
             }
         }
 
@@ -238,15 +253,15 @@ namespace ConsoleProject.Services
             }
             catch (FormatException ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"\n {ex.Message}");
             }
             catch (KeyNotFoundException ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"\n {ex.Message}");
             }
             catch (Exception)
             {
-                Console.WriteLine("An unexpected error occurred!");
+                Console.WriteLine("\n An unexpected error occurred!");
             }
 
         }
@@ -275,15 +290,15 @@ namespace ConsoleProject.Services
             }
             catch (FormatException ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"\n {ex.Message}");
             }
             catch (ArgumentNullException ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"\n {ex.Message}");
             }
             catch (Exception)
             {
-                Console.WriteLine("An unexpected error occurred!");
+                Console.WriteLine("\n An unexpected error occurred!");
             }
         }
 
@@ -300,15 +315,15 @@ namespace ConsoleProject.Services
             }
             catch (FormatException ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"\n {ex.Message}");
             }
             catch (KeyNotFoundException ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"\n {ex.Message}");
             }
             catch (Exception)
             {
-                Console.WriteLine("An unexpected error occurred!");
+                Console.WriteLine("\n An unexpected error occurred!");
             }
         }
 
@@ -328,11 +343,11 @@ namespace ConsoleProject.Services
             }
             catch (ArgumentOutOfRangeException ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"\n {ex.Message}");
             }
             catch (Exception)
             {
-                Console.WriteLine("An unexpected error occurred!");
+                Console.WriteLine("\n An unexpected error occurred!");
             }
         }
 
@@ -349,11 +364,11 @@ namespace ConsoleProject.Services
             }
             catch (FormatException ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"\n {ex.Message}");
             }
             catch (Exception)
             {
-                Console.WriteLine("An unexpected error occurred!");
+                Console.WriteLine("\n An unexpected error occurred!");
             }
         }
 
@@ -373,8 +388,9 @@ namespace ConsoleProject.Services
                 return;
             }
             int selection = 0;
-            //Product data = new(); // instance yaradanda ID artdigi ucun listden bir product goturdum
-            Product data = operations.Products.FirstOrDefault();
+            Product data = new();
+            //Product data = operations.Products.FirstOrDefault();
+
             do
             {
                 Console.WriteLine("1.Name 2.Category 3.Price(x.xx) 4.Quantity 0.I don't want to change anymore");
@@ -459,15 +475,15 @@ namespace ConsoleProject.Services
             }
             catch (FormatException ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"\n {ex.Message}");
             }
             catch (ArgumentNullException ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"\n {ex.Message}");
             }
             catch (Exception)
             {
-                Console.WriteLine("An unexpected error occurred!");
+                Console.WriteLine("\n An unexpected error occurred!");
             }
 
         }
@@ -484,15 +500,15 @@ namespace ConsoleProject.Services
             }
             catch (FormatException ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"\n {ex.Message}");
             }
             catch (KeyNotFoundException ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"\n {ex.Message}");
             }
             catch (Exception)
             {
-                Console.WriteLine("An unexpected error occurred!");
+                Console.WriteLine("\n An unexpected error occurred!");
             }
         }
 
@@ -515,23 +531,23 @@ namespace ConsoleProject.Services
             }
             catch (ArgumentNullException ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"\n {ex.Message}");
             }
             catch (FormatException ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"\n {ex.Message}");
             }
             catch (KeyNotFoundException ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"\n {ex.Message}");
             }
             catch (ArgumentOutOfRangeException ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"\n {ex.Message}");
             }
             catch (Exception)
             {
-                Console.WriteLine("An unexpected error occurred!");
+                Console.WriteLine("\n An unexpected error occurred!");
             }
 
         }
