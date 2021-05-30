@@ -151,7 +151,7 @@ namespace ConsoleProject.Services
             if (saleId == 0)
                 throw new FormatException("The sale's ID was entered incorrectly");
 
-            if (Sales.Exists(i => i.ID != saleId || i.IsDeleted == true))
+            if (!Sales.Exists(i => i.ID == saleId && i.IsDeleted == false))
                 throw new KeyNotFoundException("The ID you entered does not match the sale or sale has already been deleted");
 
             //Siyahıdan verilən ID-ə uyğun satış seçılir.
@@ -233,7 +233,7 @@ namespace ConsoleProject.Services
             if (saleId == 0)
                 throw new FormatException("The sale's ID is not entered correctly");
 
-            if (Sales.Exists(i => i.ID != saleId || i.IsDeleted == false))
+            if (!Sales.Exists(i => i.ID == saleId || i.IsDeleted == false))
                 throw new KeyNotFoundException("The ID you entered does not match the sale or sale hasn't been deleted");
 
             Sale sale = Sales.FirstOrDefault(i => i.ID == saleId);
@@ -268,19 +268,19 @@ namespace ConsoleProject.Services
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException("name", "The product's name was entered incorrectly");
 
-            if (saleId == 0)
+            if (saleId <= 0)
                 throw new FormatException("The sale's ID was entered incorrectly");
 
-            if (!Sales.Exists(i => i.ID == saleId && i.IsDeleted == false))
+            if (!(Sales.Exists(i => i.ID == saleId && i.IsDeleted == false)))
                 throw new KeyNotFoundException("The ID you entered does not match the sales or sale has already been deleted");
 
             Sale sale = Sales.FirstOrDefault(i => i.ID == saleId);
 
-            if (sale.SaleItems.Exists(i => i.Product.Name != name))
+            if (!sale.SaleItems.Exists(i => i.Product.Name == name))
                 throw new KeyNotFoundException("There is no such product among the sold products");
 
-            if (quantity == 0)
-                throw new FormatException("Qebzdeki satilmis Məhsulun sayı doğru daxil edilməyib");
+            if (quantity <= 0)
+                throw new FormatException("Product's quantity was inserted incorrectly");
 
             if (quantity > sale.SaleItems.Where(i => i.Product.Name == name).Sum(i => i.Quantity))
                 throw new ArgumentOutOfRangeException("quantity", "There are not so many products in the sale list");

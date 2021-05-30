@@ -12,7 +12,7 @@ namespace ConsoleProject.Data.Enums
         Drinks,
         Fruits,
         Sweets,
-        Desserts,
+        Nuts,
         DairyProducts
 
     }
