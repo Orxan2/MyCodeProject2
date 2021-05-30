@@ -60,7 +60,7 @@ namespace ConsoleProject.Services
 
             try
             {
-                operations.AddProduct(name, price, category, quantity);
+                operations.AddProduct(name,price,category,quantity);
                 Console.WriteLine("Product has been Inserted");
             }
             catch (ArgumentNullException ex)
@@ -83,7 +83,7 @@ namespace ConsoleProject.Services
         public static void AddSaleMenu()
         {
             string selection = string.Empty;
-            Dictionary<int, int> data = new();
+            Dictionary<int, int> datas = new();
             do
             {
                 Console.Write("Please enter the product ID you want to sell : ");
@@ -92,7 +92,7 @@ namespace ConsoleProject.Services
                 Console.Write("How many products do you want to add? : ");
                 int.TryParse(Console.ReadLine(), out int quantity);
 
-                data.Add(code, quantity);
+                datas.Add(code, quantity);
                 Console.WriteLine("Tap 1 to add another new product, otherwise anywhere else : ");
                 selection = Console.ReadLine();
 
@@ -100,7 +100,7 @@ namespace ConsoleProject.Services
 
             try
             {
-                operations.AddSale(data);
+                operations.AddSale(datas);
                 Console.WriteLine("Sale has been Inserted");
             }
             catch (FormatException ex)
@@ -108,7 +108,7 @@ namespace ConsoleProject.Services
                 Console.WriteLine(ex.Message);
             }
 
-            catch (NullReferenceException ex)
+            catch (ArgumentNullException ex)
             {
                 Console.WriteLine(ex.Message);
             }
@@ -139,7 +139,7 @@ namespace ConsoleProject.Services
             {
                 Console.WriteLine(ex.Message);
             }
-            catch (NullReferenceException ex)
+            catch (ArgumentNullException ex)
             {
                 Console.WriteLine(ex.Message);
             }
@@ -171,8 +171,7 @@ namespace ConsoleProject.Services
             {
                 Console.WriteLine("An unexpected error occurred!");
             }
-        }
-        
+        }        
         #endregion
 
         #region Searching
@@ -283,7 +282,7 @@ namespace ConsoleProject.Services
             {
                 Console.WriteLine(ex.Message);
             }
-            catch (NullReferenceException ex)
+            catch (ArgumentNullException ex)
             {
                 Console.WriteLine(ex.Message);
             }
@@ -407,7 +406,11 @@ namespace ConsoleProject.Services
                         {
                             Console.Write("Product's name : ");
                             string name = Console.ReadLine();
-                            data.Name = name;
+                            if (string.IsNullOrEmpty(name))
+                                Console.WriteLine("The product's name is empty");
+                            else
+                                data.Name = name;
+
                             break;
                         }
                     case 2:
@@ -423,19 +426,23 @@ namespace ConsoleProject.Services
                     case 3:
                         {
                             Console.Write("Product's price (x.xx) : ");
-                            if (double.TryParse(Console.ReadLine(), out double price))
-                                data.Price = price;
+                            double.TryParse(Console.ReadLine(), out double price);
+                            if (price <= 0)
+                                Console.WriteLine("The price of the product was entered incorrectly");
                             else
-                                Console.WriteLine("The price was entered incorrectly");
+                                data.Price = price;
+
                             break;
                         }
                     case 4:
                         {
                             Console.Write("Product's quantity : ");
-                            if (int.TryParse(Console.ReadLine(), out int quantity))
-                                data.Quantity = quantity;
+                            int.TryParse(Console.ReadLine(), out int quantity);
+                            if (quantity <= 0)
+                                Console.WriteLine("The quantity of the product was entered incorrectly");
                             else
-                                Console.WriteLine("The quantity was entered incorrectly");
+                                data.Quantity = quantity;                           
+
                             break;
                         }
                     default:
@@ -444,8 +451,10 @@ namespace ConsoleProject.Services
                 }
             } while (selection != 0);
 
+            operations.EditProduct(index, data);
+
         }
-        public static void RestoreProductMenu()
+            public static void RestoreProductMenu()
         {
             Console.Write("Please enter the ID of the product you want to restore : ");
             int.TryParse(Console.ReadLine(), out int index);
@@ -459,7 +468,7 @@ namespace ConsoleProject.Services
             {
                 Console.WriteLine(ex.Message);
             }
-            catch (NullReferenceException ex)
+            catch (ArgumentNullException ex)
             {
                 Console.WriteLine(ex.Message);
             }

@@ -26,6 +26,18 @@ namespace ConsoleProject.Services
         }
 
         #region Adding Operations
+
+        /// <summary>
+        /// Bu Metod anbara(Məhsullar siyahısına) <c>verilən kriterilərə sahib</c> yeni bir məhsul əlavə etmək üçün istifadə edilir.
+        /// </summary>
+        /// <param name="name">Məhsulun adıdır. Boş olmamalıdır.</param>
+        /// <param name="price">Məhsulun qiymətidir.Müsbət həqiqi ədəd(double) olmalıdır.</param>
+        /// <param name="category">Məhsulun kateqoriyasıdır string tipində qəbul edilir və Enum cinsinə çevriləcək.Boş olmamalıdır. </param>
+        /// <param name="quantity">Məhsulun sayıdır.Tam müsbət ədəd(int) olmalıdır.</param>
+        /// <returns> Geriyə bir dəyər qaytarmır.Sadəcə anbara yeni bir məhsul əlavə edir. </returns>
+        /// <exception cref="System.ArgumentNullException">Data boş olarsa, meydana gəlir.</exception>
+        /// <exception cref="System.DuplicateWaitObjectException">Əgər VB-da eyniadlı başqa bir obyekt varsa,meydana gəlir</exception>
+        /// <exception cref="System.FormatException">Data yanlış daxil edilərsə, meydana gəlir.</exception>
         public void AddProduct(string name, double price, string category, int quantity)
         {
             if (string.IsNullOrEmpty(name))
@@ -38,7 +50,7 @@ namespace ConsoleProject.Services
                 throw new FormatException("The price of the product was entered incorrectly");
 
             if (string.IsNullOrEmpty(category))
-                throw new ArgumentNullException("category", "The product's name is empty");
+                throw new ArgumentNullException("category", "The product's category is empty");
 
             if (!categoryList.Exists(i => i.ToString() == category))
                 throw new FormatException("The product's category was entered incorrectly");
@@ -46,6 +58,7 @@ namespace ConsoleProject.Services
             if (quantity <= 0)
                 throw new FormatException("The product's quantity must be number and greater than 0!");
 
+            //Product sinfindən bir obyekt yaradılır,ona dataları mənimsədilir və Products listinə əlavə edilir.
             Product product = new();
             product.Name = name;
             product.Price = price;
@@ -55,6 +68,15 @@ namespace ConsoleProject.Services
             Products.Add(product);
 
         }
+
+        /// <summary>
+        /// Bu Metod Satışa <c>anbarda olan</c> hər hansı bir məhsulu əlavə etmək üçün istifadə edilir.
+        /// </summary>        
+        /// <param name="datas">Bir Kolleksiyasıdır. Müsbət tam ədəd cinsindən İD və say tələb edir.</param>
+        /// /// <returns> Geriyə bir dəyər qaytarmır.Sadəcə satışa yeni bir məhsul əlavə edir. </returns>
+        /// <exception cref="System.FormatException">Data yanlış daxil edilərsə, meydana gəlir.</exception>
+        /// <exception cref="System.ArgumentNullException">Data boş olarsa, meydana gəlir.</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">Datanın sahib olduğu intervaldan kənarda bir dəyər əlavə edilərsə, meydana gəlir.</exception>
         public void AddSale(Dictionary<int, int> datas)
         {
             Sale sale = new();
@@ -66,10 +88,11 @@ namespace ConsoleProject.Services
                 Product product = Products.FirstOrDefault(i => i.ID == data.Key && i.IsDeleted == false);
 
                 if (product == null)
-                    throw new NullReferenceException("The product was not found");
+                    throw new ArgumentNullException("product","The product was not found");
 
                 if (data.Value > product.Quantity)
                     throw new ArgumentOutOfRangeException("data.Value", "There are not so many products in the database");
+               
                 SaleItem saleItem = new();
                 saleItem.Product = product;
                 saleItem.Quantity = data.Value;
@@ -79,40 +102,61 @@ namespace ConsoleProject.Services
                 sale.SaleItems.Add(saleItem);
             }
 
-            foreach (KeyValuePair<int, int> data in datas)//2-ci və ya sonrakı satış məhsullarını əlavə edəndə Exception olsa 1-i silməsin deyə təkrar yazdım
+            //2-ci və ya sonrakı satış məhsullarını əlavə edəndə Exception olsa,məhsul sayında dəyişiklik olamasın deyə burda yazdım
+            foreach (KeyValuePair<int, int> data in datas)
             {
                 Products.FirstOrDefault(i => i.ID == data.Key).Quantity -= data.Value;
             }
             Sales.Add(sale);
         }
+
         #endregion
 
         #region Removing Operations
+
+        /// <summary>
+        ///  Bu Metod anbardan(Məhsullar siyahısı) <c>verilən kriterilərə uyğun</c> bir məhsulu silmək üçün istifadə edilir.
+        /// </summary>
+        /// <param name="productNo">Məhsulun ID-dir.Müsbət tam ədəd olmalıdır.</param>
+        /// <returns> Geriyə bir dəyər qaytarmır.Anbardakı uyğun məhsulu silir.<c>(isdeleted = true)</c> </returns>
+        /// <exception cref="System.FormatException">Data yanlış daxil edilərsə, meydana gəlir.</exception>
+        /// <exception cref="System.ArgumentNullException">Data boş olarsa, meydana gəlir.</exception>
         public void DeleteProduct(int productNo)
         {
             if (productNo == 0)
                 throw new FormatException("The product's ID was entered incorrectly");
 
+            //Siyahıdan verilən ID-ə uyğun məhsul seçılir.
             Product product = Products.FirstOrDefault(i => i.ID == productNo);
             if (product == null || product.IsDeleted == true)
-                throw new NullReferenceException("The product was not found or has already been deleted");
+                throw new ArgumentNullException("product","The product was not found or has already been deleted");
 
             product.IsDeleted = true;
         }
+
+        /// <summary>
+        /// Bu Metod satışdan <c>verilən kriterilərə uyğun</c> bir satışı silmək üçün istifadə edilir.
+        /// </summary>
+        /// <param name="saleId">Satışın ID-dir.Müsbət tam ədəd olmalıdır.</param>
+        /// <returns> Geriyə bir dəyər qaytarmır.Sadəcə satışı silir. <c>(isdeleted = true)</c> </returns>
+        /// <exception cref="System.FormatException">Data yanlış daxil edilərsə, meydana gəlir.</exception>
+        /// <exception cref="System.Collections.Generic.KeyNotFoundException">VB-da daxil edilən dataya sahib bir obyekt tapılmasa meydana gəlir</exception>
         public void DeleteSale(int saleId)
         {
             if (saleId == 0)
-                throw new FormatException("The sale's ID is not entered correctly");
+                throw new FormatException("The sale's ID was entered incorrectly");
 
             if (Sales.Exists(i => i.ID != saleId || i.IsDeleted == true))
                 throw new KeyNotFoundException("The ID you entered does not match the sale or sale has already been deleted");
 
+            //Siyahıdan verilən ID-ə uyğun satış seçılir.
             Sale sale = Sales.FirstOrDefault(i => i.ID == saleId);
 
             foreach (var saleItem in sale.SaleItems)
             {
                 Product product = (Products.FirstOrDefault(i => i.ID == saleItem.Product.ID));
 
+                //Məhsul silinibsə belə yenidən anbara daxil edilir.
                 if (product.IsDeleted == true)
                     product.IsDeleted = false;
 
@@ -122,23 +166,41 @@ namespace ConsoleProject.Services
             sale.IsDeleted = true;
 
         }
+
         #endregion
 
         #region Editing Operations
+
+        /// <summary>
+        /// Bu Metod anbardan(Məhsullar siyahısı) <c>silinmiş uyğun</c> məhsulu bərpa etmək üçün istifadə edilir.
+        /// </summary>
+        /// <param name="productNo">Məhsulun ID-dir.Müsbət tam ədəd olmalıdır.</param>
+        /// <returns> Geriyə bir dəyər qaytarmır.Sadəcə silinmiş uyğun məhsulu bərpa edir.<c>(isdeleted = false)</c> </returns>
+        /// /// <exception cref="System.FormatException">Data yanlış daxil edilərsə, meydana gəlir.</exception>
+        /// <exception cref="System.ArgumentNullException">Data boş olarsa, meydana gəlir.</exception>
         public void RestoreProduct(int productNo)
         {
             if (productNo == 0)
                 throw new FormatException("The product's ID was entered incorrectly");
 
+            //Siyahıdan verilən ID-ə uyğun məhsul seçılir.
             Product product = Products.FirstOrDefault(i => i.ID == productNo);
 
             if (product == null || product.IsDeleted == false)
-                throw new NullReferenceException("The product was not found or hasn't been deleted");
+                throw new ArgumentNullException("product","The product was not found or hasn't been deleted");
 
             product.IsDeleted = false;
         }
+
+        /// <summary>
+        ///Bu metod məhsulun hər hansı bir datasını editləmək üçün istifadə edilir.
+        /// </summary>
+        /// <param name="productNo">Məhsulun ID-dir.Müsbət tam ədəd olmalıdır.</param>
+        /// <param name="data">Product sinfindən bir məhsul obyektidir.</param>
+        /// <returns> Geriyə bir dəyər qaytarmır.Sadəcə məhsulun datalarını yeniləyir.</returns>       
         public void EditProduct(int productNo, Product data)
         {
+           
             foreach (var product in Products)
             {
                 if (product.ID == productNo && product.IsDeleted == false)
@@ -154,6 +216,14 @@ namespace ConsoleProject.Services
                 }
             }
         }
+               
+        /// <summary>
+        /// Bu Metod <c>silinmiş uyğun</c> satışı bərpa etmək üçün istifadə edilir.
+        /// </summary>
+        /// <param name="saleId">Satışın ID-dir.Müsbət tam ədəd olmalıdır.</param>
+        /// <returns> Geriyə bir dəyər qaytarmır.Sadəcə satışı silir. <c>(isdeleted = false)</c> </returns>
+        /// <exception cref="System.FormatException">Data yanlış daxil edilərsə, meydana gəlir.</exception>
+        /// <exception cref="System.Collections.Generic.KeyNotFoundException">VB-da daxil edilən dataya sahib bir obyekt tapılmasa meydana gəlir</exception>
         public void RestoreSale(int saleId)
         {
             if (saleId == 0)
@@ -166,6 +236,7 @@ namespace ConsoleProject.Services
 
             foreach (var saleItem in sale.SaleItems)
             {
+                //Siyahıdan verilən ID-ə uyğun məhsul seçılir və sayı azaldılır.
                 Product product = (Products.FirstOrDefault(i => i.ID == saleItem.Product.ID));
 
                 if (product.IsDeleted == true)
@@ -176,6 +247,18 @@ namespace ConsoleProject.Services
 
             sale.IsDeleted = false;
         }
+
+        /// <summary>
+        /// Bu metod satılmış hər hansı məhsulu anbara(məhsullar siyahısı) geri qaytarmaq üçün istifadə edilir.
+        /// </summary>
+        /// <param name="name">Satışdan qayıdan məhsulun adıdır.Boş olmamalıdır.</param>
+        /// <param name="saleId">Satışın ID-dir.Müsbət tam ədəd olmalıdır.</param>
+        /// <param name="quantity">Satışdan qayıdan məhsulun sayıdır.Müsbət tam ədəd olmalıdır.</param>
+        /// <returns> Geriyə bir dəyər qaytarmır.Sadəcə satılmış bir məhsulu anbara geri qaytarır.</returns>
+        /// <exception cref="System.ArgumentNullException">Data boş olarsa, meydana gəlir.</exception>
+        /// <exception cref="System.FormatException">Data yanlış daxil edilərsə, meydana gəlir.</exception>
+        /// <exception cref="System.Collections.Generic.KeyNotFoundException">VB-da daxil edilən dataya sahib bir obyekt tapılmasa meydana gəlir</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">Datanın sahib olduğu intervaldan kənarda bir dəyər əlavə edilərsə, meydana gəlir.</exception>
         public void ReturnProductFromSale(string name, int saleId, int quantity)
         {
             if (string.IsNullOrEmpty(name))
@@ -200,6 +283,7 @@ namespace ConsoleProject.Services
 
             foreach (var saleItem in sale.SaleItems)
             {
+                //uyğun addakı məhsulun satışdan geri qayıtması
                 if (saleItem.Product.Name == name)
                 {
                     if (saleItem.Product.IsDeleted == true)
@@ -208,13 +292,10 @@ namespace ConsoleProject.Services
                     saleItem.Quantity -= quantity;
                     saleItem.Product.Quantity += quantity;
                     sale.Price -= quantity * saleItem.Product.Price;
-
                 }
             }
-
-
-
         }
+
         #endregion
 
         #region Searching Operations
@@ -294,7 +375,7 @@ namespace ConsoleProject.Services
             Sale sale = Sales.FirstOrDefault(i => i.ID == saleId && i.IsDeleted == false);
 
             if (sale == null)
-                throw new NullReferenceException("Searched sales not found");
+                throw new ArgumentNullException("sale","Searched sales not found");
 
             return sale;
 
