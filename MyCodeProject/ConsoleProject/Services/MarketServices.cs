@@ -176,7 +176,7 @@ namespace ConsoleProject.Services
         /// </summary>
         /// <param name="productNo">Məhsulun ID-dir.Müsbət tam ədəd olmalıdır.</param>
         /// <returns> Geriyə bir dəyər qaytarmır.Sadəcə silinmiş uyğun məhsulu bərpa edir.<c>(isdeleted = false)</c> </returns>
-        /// /// <exception cref="System.FormatException">Data yanlış daxil edilərsə, meydana gəlir.</exception>
+        /// <exception cref="System.FormatException">Data yanlış daxil edilərsə, meydana gəlir.</exception>
         /// <exception cref="System.ArgumentNullException">Data boş olarsa, meydana gəlir.</exception>
         public void RestoreProduct(int productNo)
         {
@@ -249,16 +249,16 @@ namespace ConsoleProject.Services
         }
 
         /// <summary>
-        /// Bu metod satılmış hər hansı məhsulu anbara(məhsullar siyahısı) geri qaytarmaq üçün istifadə edilir.
+        /// Bu metod satılmış hər hansı məhsulu anbara(məhsullar siyahısı) geri qaytarmaq üçün istifadə edilir
         /// </summary>
-        /// <param name="name">Satışdan qayıdan məhsulun adıdır.Boş olmamalıdır.</param>
-        /// <param name="saleId">Satışın ID-dir.Müsbət tam ədəd olmalıdır.</param>
-        /// <param name="quantity">Satışdan qayıdan məhsulun sayıdır.Müsbət tam ədəd olmalıdır.</param>
+        /// <param name="name">Satışdan qayıdan məhsulun adıdır.Boş olmamalıdır</param>
+        /// <param name="saleId">Satışın ID-dir.Müsbət tam ədəd olmalıdır</param>
+        /// <param name="quantity">Satışdan qayıdan məhsulun sayıdır.Müsbət tam ədəd olmalıdır</param>
         /// <returns> Geriyə bir dəyər qaytarmır.Sadəcə satılmış bir məhsulu anbara geri qaytarır.</returns>
-        /// <exception cref="System.ArgumentNullException">Data boş olarsa, meydana gəlir.</exception>
-        /// <exception cref="System.FormatException">Data yanlış daxil edilərsə, meydana gəlir.</exception>
+        /// <exception cref="System.ArgumentNullException">Data boş olarsa, meydana gəlir</exception>
+        /// <exception cref="System.FormatException">Data yanlış daxil edilərsə, meydana gəlir</exception>
         /// <exception cref="System.Collections.Generic.KeyNotFoundException">VB-da daxil edilən dataya sahib bir obyekt tapılmasa meydana gəlir</exception>
-        /// <exception cref="System.ArgumentOutOfRangeException">Datanın sahib olduğu intervaldan kənarda bir dəyər əlavə edilərsə, meydana gəlir.</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">Datanın sahib olduğu intervaldan kənarda bir dəyər əlavə edilərsə, meydana gəlir</exception>
         public void ReturnProductFromSale(string name, int saleId, int quantity)
         {
             if (string.IsNullOrEmpty(name))
@@ -299,6 +299,13 @@ namespace ConsoleProject.Services
         #endregion
 
         #region Searching Operations
+
+        /// <summary>
+        /// Məhsulun ada görə axtarışını icra edən bir metoddur.Əgər məhsulun adında daxil edilən mətn varsa, həmin məhsulu və ya məhsulları qaytaracaq
+        /// </summary>
+        /// <param name="text">String tipində bir mətndir.</param>
+        /// <returns>IEnumerable tipində generic kolleksiya geri qaytarır</returns>
+        /// <exception cref="System.ArgumentNullException">Data boş olarsa, meydana gəlir.Bu Kolleksiyada ada görə axtarışda tapılan məhsullar olur.</exception>
         public IEnumerable<Product> SearchProductForName(string text)
         {
             if (string.IsNullOrEmpty(text))
@@ -308,6 +315,14 @@ namespace ConsoleProject.Services
 
             return updatedProdects;
         }
+
+        /// <summary>
+        /// Məhsulun qiymətə görə axtarışını icra edən bir metoddur.
+        /// </summary>
+        /// <param name="min">Məhsulun axtarılan minimum qiyməti. Müsbət həqiqi ədəd olmalıdır.</param>
+        /// <param name="max">Məhsulun axtarılan maksimum qiyməti. Müsbət həqiqi ədəd olmalıdır.</param>
+        /// <returns>IEnumerable tipində generic kolleksiya geri qaytarır. Bu Kolleksiyada qiymət intervalına görə axtarışda tapılan məhsullar olur</returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">Datanın sahib olduğu intervaldan kənarda bir dəyər əlavə edilərsə, meydana gəlir.</exception>
         public IEnumerable<Product> SearchProductForPrice(double min, double max)
         {
             if (min <= 0)
@@ -319,6 +334,13 @@ namespace ConsoleProject.Services
 
             return searchedProducts;
         }
+
+        /// <summary>
+        /// Məhsulun kateqoriyaya görə axtarışını icra edən bir metoddur.
+        /// </summary>
+        /// <param name="category">Məhsulun kateqoriyasıdır. String tipində qəbul edilir və Enum cinsinə çevriləcək.Boş olmamalıdır. </param>
+        /// <returns>IEnumerable tipində generic kolleksiya geri qaytarır.Bu Kolleksiyada kateqoriyaya görə axtarışda tapılan məhsullar olur.</returns>
+        /// <exception cref="System.FormatException">Data yanlış daxil edilərsə, meydana gəlir.</exception>
         public IEnumerable<Product> SearchProductForCategory(string category)
         {
             if (!categoryList.Exists(i => i.ToString() == category))
@@ -328,6 +350,14 @@ namespace ConsoleProject.Services
 
             return searchedProducts;
         }
+
+        /// <summary>
+        /// Satışın qiymətə görə axtarışını icra edən bir metoddur.
+        /// </summary>
+        /// <param name="minValue">Satışın axtarılan minimum qiyməti. Müsbət həqiqi ədəd olmalıdır</param>
+        /// <param name="maxValue">Satışın axtarılan minimum qiyməti. Müsbət həqiqi ədəd olmalıdır</param>
+        /// <returns>IEnumerable tipində generic kolleksiya geri qaytarır. Bu Kolleksiyada qiymət intervalına görə axtarışda tapılan satışlar olur</returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">Datanın sahib olduğu intervaldan kənarda bir dəyər əlavə edilərsə, meydana gəlir</exception>
         public IEnumerable<Sale> SearchSalesForPrice(double minValue, double maxValue)
         {
             if (minValue <= 0)
@@ -341,6 +371,15 @@ namespace ConsoleProject.Services
             return searchedSales;
 
         }
+
+        /// <summary>
+        /// Satışın müəyyən bir tarix intervalına görə axtarışını icra edən bir metoddur.
+        /// </summary>
+        /// <param name="startDate">Axtarılan başlanğıc tarixi</param>
+        /// <param name="lastDate">Axtarılan son tarix</param>
+        /// <returns>IEnumerable tipində generic kolleksiya geri qaytarır. Bu Kolleksiyada tarix intervalına görə axtarışda tapılan satışlar olur.</returns>
+        /// <exception cref="System.FormatException">Data yanlış daxil edilərsə, meydana gəlir.</exception>
+        /// <exception cref="System.Collections.Generic.KeyNotFoundException">VB-da daxil edilən dataya sahib bir obyekt tapılmasa meydana gəlir</exception>
         public IEnumerable<Sale> SearchSalesForDateInterval(DateTime startDate, DateTime lastDate)
         {
             if (startDate.Year == 1)
@@ -355,6 +394,14 @@ namespace ConsoleProject.Services
 
             return searhedSales;
         }
+       
+        /// <summary>
+        /// Satışın müəyyən bir tarixə görə axtarışını icra edən bir metoddur.
+        /// </summary>
+        /// <param name="date">Axtarılan tarix</param>
+        /// <returns>IEnumerable tipində generic kolleksiya geri qaytarır. Bu Kolleksiyada tarix intervalına görə axtarışda tapılan satışlar olur</returns>
+        /// <exception cref="System.FormatException">Data yanlış daxil edilərsə, meydana gəlir.</exception>
+        /// <exception cref="System.Collections.Generic.KeyNotFoundException">VB-da daxil edilən dataya sahib bir obyekt tapılmasa meydana gəlir</exception>
         public IEnumerable<Sale> SearchSalesForDate(DateTime date)
         {
             if (date.Year == 1)
@@ -367,6 +414,14 @@ namespace ConsoleProject.Services
             return searhedSales;
 
         }
+
+        /// <summary>
+        /// İstifadəçidən qebul edilmis id-ə esasen hemin nomreli satisin melumatlarinin gosterilmesini icra edən bir metoddur
+        /// </summary>
+        /// <param name="saleId">Satışın ID-dir. Müsbət tam ədəd olmalıdır</param>
+        /// <returns>Sale tipində bir obyekt geri qaytarır.</returns>
+        /// <exception cref="System.FormatException">Data yanlış daxil edilərsə, meydana gəlir</exception>
+        /// <exception cref="System.ArgumentNullException">Data boş olarsa, meydana gəlir</exception>
         public Sale SearchSaleForID(int saleId)
         {
             if (saleId == 0)
@@ -378,9 +433,8 @@ namespace ConsoleProject.Services
                 throw new ArgumentNullException("sale","Searched sales not found");
 
             return sale;
-
-
         }
+
         #endregion
 }
 }
