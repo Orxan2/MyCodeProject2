@@ -230,10 +230,10 @@ namespace ConsoleProject.Services
         /// <exception cref="System.Collections.Generic.KeyNotFoundException">VB-da daxil edilən dataya sahib bir obyekt tapılmasa meydana gəlir</exception>
         public void RestoreSale(int saleId)
         {
-            if (saleId == 0)
+            if (saleId <= 0)
                 throw new FormatException("The sale's ID is not entered correctly");
 
-            if (!Sales.Exists(i => i.ID == saleId || i.IsDeleted == false))
+            if (!Sales.Exists(i => i.ID == saleId && i.IsDeleted == true))
                 throw new KeyNotFoundException("The ID you entered does not match the sale or sale hasn't been deleted");
 
             Sale sale = Sales.FirstOrDefault(i => i.ID == saleId);
